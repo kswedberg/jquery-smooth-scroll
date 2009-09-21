@@ -1,8 +1,14 @@
 h1. Smooth Scroll Plugin
 
+h2. Features
+
 * Allows for easy implementation of smooth scrolling for same-page links.
 * Works like this: $('a').smoothScroll();
 * Specify a containing element if you want: $('#container a').smoothScroll();
 * Exclude links if they are within a containing element: $('#container a').smoothScroll({excludeWithin: ['.container2']});
 * Exclude links if they match certain conditions: $('a').smoothScroll({exclude: ['.rough','#chunky']});
 * Adjust where the scrolling stops: $('.backtotop').smoothScroll({offset: -100});
+
+h2. Flaws
+
+* No history/back-button management
