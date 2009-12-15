@@ -2,7 +2,8 @@
 // Animated Scrolling for Same-Page Links
 // @see http://www.learningjquery.com/2007/10/improved-animated-scrolling-script-for-same-page-links
 
-$.fn.smoothScroll = function(options) {
+$.fn.extend({
+	smoothScroll: function(options) {
   var opts = $.extend({}, $.fn.smoothScroll.defaults, options),
       locationPath = filterPath(location.pathname),
       scrollElem = scrollableElement('html', 'body');
@@ -15,7 +16,11 @@ $.fn.smoothScroll = function(options) {
         thisHash = link.hash && link.hash.replace('#',''),
         scrollTargetExists = thisHash && !!$('#' + thisHash).length;
 
-    if (hostMatch && pathMatch && scrollTargetExists) {
+    if (opts.scrollTarget) {
+      if (!/#\S$/.test(opts.scrollTarget)) { opts.scrollTarget += ':first'; }
+      $link.data('scrollTarget', opts.scrollTarget);
+      
+    } else if (hostMatch && pathMatch && scrollTargetExists) {
       var include = true,
 
           exclude = opts.exclude,
@@ -41,22 +46,14 @@ $.fn.smoothScroll = function(options) {
         $link.data('scrollTarget', '#' + thisHash);
       }
     }
-
   });
 
-  
+   
   this.die('click.smoothscroll').live('click.smoothscroll', function(event) {
-    var scrollTargetId = $(this).data('scrollTarget');
-    if (scrollTargetId) {
-      event.preventDefault();
-       
-      var scrollTargetOffset = $(scrollTargetId).offset().top;
-
-      $(scrollElem).animate({scrollTop: scrollTargetOffset + opts.offset}, 400, function() {
-        // location.hash = target;
-      });
-    }
+    event.preventDefault();
+    $(this).smoothScroller();
   });
+  
   return this;
   
   // private functions
@@ -92,13 +89,38 @@ $.fn.smoothScroll = function(options) {
       window.console.log($obj);
     }
   }
-};
+},
+
+smoothScroller: function(link) {
+  var scrollTargetId = $(link).data('scrollTarget');
+  if (scrollTargetId) {
+    event.preventDefault();
+     
+    var scrollTargetOffset = $(scrollTargetId).offset().top;
+
+    $(scrollElem).animate({
+      scrollTop: scrollTargetOffset + opts.offset
+    }, 
+    {
+      duration: opts.speed,
+      easing: opts.easing
+    }, function() {
+      opts.afterScroll.call(link);
+    });
+  }
+}
+});
 
 // default options
 $.fn.smoothScroll.defaults = {
+  autobind: true,
   exclude: [],
   excludeWithin:[],
-  offset: 0
+  offset: 0,
+  scrollTarget: null, // only use if you want to override default behavior
+  afterScroll: null,   // function to be called after window is scrolled
+  easing: 'swing',
+  speed: 400
 };
 
 })(jQuery);
