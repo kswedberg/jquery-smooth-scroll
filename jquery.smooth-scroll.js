@@ -11,6 +11,7 @@ $.fn.extend({
     
     this.each(function() {
       var opts = $.extend({}, $.fn.smoothScroll.defaults, options);
+      
       $(this).bind('click', function(event) {
         var link = this, $link = $(this),
             hostMatch = ((location.hostname === link.hostname) || !link.hostname),
@@ -39,6 +40,7 @@ $.fn.extend({
 
         if (include) {
           opts.scrollTarget = opts.scrollTarget || thisHash;
+          opts.link = link;
           event.preventDefault();
           $.smoothScroll(opts);        
         }
@@ -61,22 +63,27 @@ $.smoothScroll = function(options, px) {
     scrollTargetOffset = options;
   } else {
     opts = $.extend({}, $.fn.smoothScroll.defaults, options);
-    scrollTargetOffset = $(opts.scrollTarget).offset().top;
+    scrollTargetOffset = px || $(opts.scrollTarget).offset().top;
   }
-
+  opts = $.extend({link: null}, opts);
+  
   $(scrollElem).animate({
     scrollTop: scrollTargetOffset + opts.offset
   }, 
   {
     duration: opts.speed,
-    easing: opts.easing
-  }, function() {
-    opts.afterScroll.call(link);
+    easing: opts.easing, 
+    complete: function() {
+      if ( opts.afterScroll && $.isFunction(opts.afterScroll) ) {
+        opts.afterScroll.call(opts.link, opts);
+      }
+    }
   });
 
 };
 
 $.smoothScroll.version = version;
+
 // default options
 $.fn.smoothScroll.defaults = {
   exclude: [],

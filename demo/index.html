@@ -13,7 +13,11 @@
   <script src="../jquery.smooth-scroll.js" type="text/javascript"></script>
   <script type="text/javascript">
     $(document).ready(function() {
-      $('li a').smoothScroll();
+      $('li a').smoothScroll({
+        afterScroll: function() {
+          /* location.hash = this.hash; */
+        }
+      });
     });
     
   </script>
