@@ -1,6 +1,16 @@
+/*
+ * jQuery Smooth Scroll plugin
+ * Version 1.1  (March 25, 2010)
+ * @requires jQuery v1.3+
+ *
+ * Dual licensed under the MIT and GPL licenses (just like jQuery):
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ *
+ */
+
+
 (function($) {
-// Animated Scrolling for Same-Page Links
-// @see http://www.learningjquery.com/2007/10/improved-animated-scrolling-script-for-same-page-links
 
 var version = '1.1';
 
@@ -90,7 +100,7 @@ $.fn.smoothScroll.defaults = {
   excludeWithin:[],
   offset: 0,
   scrollTarget: null, // only use if you want to override default behavior
-  afterScroll: null,   // function to be called after window is scrolled
+  afterScroll: null,   // function to be called after window is scrolled. "this" is the triggering element
   easing: 'swing',
   speed: 400
 };

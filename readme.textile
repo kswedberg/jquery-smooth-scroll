@@ -8,6 +8,7 @@ h2. Features
 * Exclude links if they are within a containing element: $('#container a').smoothScroll({excludeWithin: ['.container2']});
 * Exclude links if they match certain conditions: $('a').smoothScroll({exclude: ['.rough','#chunky']});
 * Adjust where the scrolling stops: $('.backtotop').smoothScroll({offset: -100});
+* Add a callback function that is triggered after the scroll is complete: $('a').smoothScroll({afterScroll: function() { window.location.hash = this.hash; }});
 
 h2. Flaws
 
