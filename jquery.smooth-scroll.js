@@ -73,7 +73,7 @@ $.smoothScroll = function(options, px) {
     scrollTargetOffset = options;
   } else {
     opts = $.extend({}, $.fn.smoothScroll.defaults, options);
-    scrollTargetOffset = px || $(opts.scrollTarget).offset().top;
+    scrollTargetOffset = px || $(opts.scrollTarget).offset() && $(opts.scrollTarget).offset().top || 0;
   }
   opts = $.extend({link: null}, opts);
   
