@@ -1,6 +1,6 @@
 /*
  * jQuery Smooth Scroll plugin
- * Version 1.1  (March 25, 2010)
+ * Version 1.2  (July 6, 2010)
  * @requires jQuery v1.3+
  *
  * Dual licensed under the MIT and GPL licenses (just like jQuery):
@@ -12,77 +12,109 @@
 
 (function($) {
 
-var version = '1.1';
+var version = '1.2';
 
 var locationPath = filterPath(location.pathname);
 
 $.fn.extend({
-	smoothScroll: function(options) {
-    
+  scrollable: function() {
+    var scrollable = [], scrolled = false;
     this.each(function() {
-      var opts = $.extend({}, $.fn.smoothScroll.defaults, options);
-      
-      $(this).bind('click', function(event) {
-        var link = this, $link = $(this),
-            hostMatch = ((location.hostname === link.hostname) || !link.hostname),
-            pathMatch = opts.scrollTarget || (filterPath(link.pathname) || locationPath) === locationPath,
-            thisHash = link.hash && '#' + link.hash.replace('#',''),
-            include = true;
-        
 
-        if (!opts.scrollTarget && (!hostMatch || !pathMatch || thisHash.length == 1) ) {
-          include = false;
-        } else {
-          var exclude = opts.exclude, elCounter = 0, el = exclude.length;
-          while (include && elCounter < el) {
-            if ($link.is(exclude[elCounter++])) {
-              include = false;
-            }
-          }
+      if (this == document || this == window) { return; }
+      var el = $(this);
+      if ( el.scrollTop() > 0 ) {
+        scrollable = [this];
+        return false;
+      }
 
-          var excludeWithin = opts.excludeWithin, ewlCounter = 0, ewl = excludeWithin.length;
-          while (include && ewlCounter < ewl) {
-            if ($link.parents(excludeWithin[ewlCounter++] + ':first').length) {
-              include = false;
-            }
-          }          
-        }
+      el.scrollTop(1);
+      scrolled  = el.scrollTop() > 0;
+      el.scrollTop(0);
+      if ( scrolled ) {
+        scrollable = [this];
+        return false;
+      }
 
-        if (include) {
-          opts.scrollTarget = opts.scrollTarget || thisHash;
-          opts.link = link;
-          event.preventDefault();
-          $.smoothScroll(opts);        
-        }
-      });
     });
-  
+
+    return this.pushStack(scrollable);
+  },
+
+	smoothScroll: function(options) {
+    var opts = $.extend({}, $.fn.smoothScroll.defaults, options);
+    this.die('click.smoothscroll').live('click.smoothscroll', function(event) {
+
+      var link = this, $link = $(this),
+          hostMatch = ((location.hostname === link.hostname) || !link.hostname),
+          pathMatch = opts.scrollTarget || (filterPath(link.pathname) || locationPath) === locationPath,
+          thisHash = link.hash && '#' + link.hash.replace('#',''),
+          include = true;
+
+
+      if (!opts.scrollTarget && (!hostMatch || !pathMatch || thisHash.length == 1) ) {
+        include = false;
+      } else {
+        var exclude = opts.exclude, elCounter = 0, el = exclude.length;
+        while (include && elCounter < el) {
+          if ($link.is(exclude[elCounter++])) {
+            include = false;
+          }
+        }
+
+        var excludeWithin = opts.excludeWithin, ewlCounter = 0, ewl = excludeWithin.length;
+        while (include && ewlCounter < ewl) {
+          if ($link.closest(excludeWithin[ewlCounter++]).length) {
+            include = false;
+          }
+        }
+      }
+
+      if (include) {
+        opts.scrollTarget = opts.scrollTarget || thisHash;
+        opts.link = link;
+        event.preventDefault();
+        $.smoothScroll(opts);
+      }
+    });
+
     return this;
 
   }
-  
+
 });
 
 $.smoothScroll = function(options, px) {
-  var opts,
-      scrollTargetOffset,
-      scrollElem = scrollableElement('html', 'body');
-  
+  var opts, scrollTargetOffset, offPos = 'offset';
+
   if ( typeof options === 'number') {
     opts = $.fn.smoothScroll.defaults;
     scrollTargetOffset = options;
   } else {
-    opts = $.extend({}, $.fn.smoothScroll.defaults, options);
-    scrollTargetOffset = px || $(opts.scrollTarget).offset() && $(opts.scrollTarget).offset().top || 0;
+    opts = $.extend({}, $.fn.smoothScroll.defaults, options || {});
+    if (opts.scrollElement) {
+      offPos = 'position';
+      if (opts.scrollElement.css('position') == 'static') {
+        opts.scrollElement.css('position', 'relative');
+      }
+    }
+
+    scrollTargetOffset = px ||
+                        ( $(opts.scrollTarget)[offPos]() &&
+                        $(opts.scrollTarget)[offPos]()[opts.direction] ) ||
+                        0;
   }
   opts = $.extend({link: null}, opts);
-  
-  $(scrollElem).animate({
-    scrollTop: scrollTargetOffset + opts.offset
-  }, 
+
+  var $scroller = opts.scrollElement || $('html, body').scrollable(),
+      dirs = {top: 'Top', 'left': 'Left'},
+      aniprops = {};
+
+  aniprops['scroll' + dirs[opts.direction]] = scrollTargetOffset + opts.offset;
+  $scroller.animate(aniprops,
   {
     duration: opts.speed,
-    easing: opts.easing, 
+    easing: opts.easing,
     complete: function() {
       if ( opts.afterScroll && $.isFunction(opts.afterScroll) ) {
         opts.afterScroll.call(opts.link, opts);
@@ -99,6 +131,9 @@ $.fn.smoothScroll.defaults = {
   exclude: [],
   excludeWithin:[],
   offset: 0,
+  direction: 'top', // one of 'top' or 'left'
+  scrollElement: null, // jQuery set of elements you wish to scroll.
+                      //if null (default), $('html, body').scrollable() is used.
   scrollTarget: null, // only use if you want to override default behavior
   afterScroll: null,   // function to be called after window is scrolled. "this" is the triggering element
   easing: 'swing',
@@ -106,28 +141,7 @@ $.fn.smoothScroll.defaults = {
 };
 
 
-// private functions
-
-// don't pass window or document
-function scrollableElement(els) {
-  for (var i = 0, argLength = arguments.length; i < argLength; i++) {
-    var el = arguments[i],
-        $scrollElement = $(el);
-    if ($scrollElement.scrollTop() > 0) {
-      return el;
-    } else {
-      $scrollElement.scrollTop(1);
-      var isScrollable = $scrollElement.scrollTop() > 0;
-      $scrollElement.scrollTop(0);
-      if (isScrollable) {
-        return el;
-      }
-    }
-  }
-  return [];
-}
-
-
+// private function
 function filterPath(string) {
   return string
     .replace(/^\//,'')
