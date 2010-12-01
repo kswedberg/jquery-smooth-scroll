@@ -20,9 +20,9 @@ var version = '1.3';
 
 var locationPath = filterPath(location.pathname);
 
-$.fn.extend({
-  scrollable: function() {
+  function getScrollable(els) {
     var scrollable = [], scrolled = false;
+
     this.each(function() {
 
       if (this == document || this == window) { return; }
@@ -42,10 +42,20 @@ $.fn.extend({
 
     });
 
-    return this.pushStack(scrollable);
+    if ( els === 'first' && scrollable.length ) {
+      scrollable = [ scrollable.shift() ];
+    }
+
+    return scrollable;
+  }
+$.fn.extend({
+  scrollable: function() {
+    var scrl = getScrollable.call(this);
+    return this.pushStack(scrl);
   },
   firstScrollable: function() {
-    return this.scrollable().eq(0);
+    var scrl = getScrollable.call(this, 'first');
+    return this.pushStack(scrl);
   },
 
 	smoothScroll: function(options) {
