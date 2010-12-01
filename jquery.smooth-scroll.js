@@ -16,7 +16,7 @@
 
 (function($) {
 
-var version = '1.3';
+var version = '1.3.1';
 
 var locationPath = filterPath(location.pathname);
 
@@ -58,7 +58,8 @@ $.fn.extend({
     return this.pushStack(scrl);
   },
 
-	smoothScroll: function(options) {
+  smoothScroll: function(options) {
+    options = options || {};
     var opts = $.extend({}, $.fn.smoothScroll.defaults, options);
     this.die('click.smoothscroll').live('click.smoothscroll', function(event) {
 
@@ -87,8 +88,8 @@ $.fn.extend({
         }
       }
 
-      if (include) {
-        opts.scrollTarget = opts.scrollTarget || thisHash;
+      if ( include ) {
+        opts.scrollTarget = options.scrollTarget || thisHash;
         opts.link = link;
         event.preventDefault();
         $.smoothScroll(opts);
