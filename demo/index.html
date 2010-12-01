@@ -15,17 +15,13 @@
       border: 1px solid #999;
     }
   </style>
-  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
   <script>!window.jQuery && document.write(unescape('%3Cscript src="/lib/jquery.js"%3E%3C/script%3E'));</script>
 
   <script src="../jquery.smooth-scroll.js" type="text/javascript"></script>
   <script type="text/javascript">
     $(document).ready(function() {
-      $('li a').smoothScroll({
-        afterScroll: function() {
-          /* location.hash = this.hash; */
-        }
-      });
+      $('ul.mainnav a').smoothScroll();
 
       $('p.subnav a').click(function(event) {
         event.preventDefault();
@@ -49,7 +45,7 @@
 <body>
   <div class="container">
     <p>Scroll the Document to one of the following paragraphs:</p>
-    <ul>
+    <ul class="mainnav">
       <li><a href="#p1">p1</a></li>
       <li><a href="#p2">p2</a></li>
       <li><a href="#p3">p3</a></li>
