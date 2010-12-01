@@ -59,7 +59,7 @@ $.fn.extend({
           include = true;
 
 
-      if (!opts.scrollTarget && (!hostMatch || !pathMatch || !thisHash) ) {
+      if ( !opts.scrollTarget && (!hostMatch || !pathMatch || !thisHash) ) {
         include = false;
       } else {
         var exclude = opts.exclude, elCounter = 0, el = exclude.length;
@@ -70,7 +70,7 @@ $.fn.extend({
         }
 
         var excludeWithin = opts.excludeWithin, ewlCounter = 0, ewl = excludeWithin.length;
-        while (include && ewlCounter < ewl) {
+        while ( include && ewlCounter < ewl ) {
           if ($link.closest(excludeWithin[ewlCounter++]).length) {
             include = false;
           }
