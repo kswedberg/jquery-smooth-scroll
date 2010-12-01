@@ -1,7 +1,7 @@
 /*!
  * jQuery Smooth Scroll Plugin v1.3
  *
- * Date: Sat Nov 20 18:12:52 2010 -0500
+ * Date: Wed Dec 1 15:03:21 2010 -0500
  * Requires: jQuery v1.3+
  *
  * Copyright 2010, Karl Swedberg
