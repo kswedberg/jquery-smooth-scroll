@@ -1,5 +1,5 @@
 /*!
- * jQuery Smooth Scroll Plugin v1.3
+ * jQuery Smooth Scroll Plugin v1.4
  *
  * Date: Wed Dec 1 15:03:21 2010 -0500
  * Requires: jQuery v1.3+
@@ -16,45 +16,58 @@
 
 (function($) {
 
-var version = '1.3.1';
+var version = '1.4',
+    defaults = {
+      exclude: [],
+      excludeWithin:[],
+      offset: 0,
+      direction: 'top', // one of 'top' or 'left'
+      scrollElement: null, // jQuery set of elements you wish to scroll (for $.smoothScroll).
+                          //  if null (default), $('html, body').firstScrollable() is used.
+      scrollTarget: null, // only use if you want to override default behavior
+      afterScroll: null,   // function to be called after window is scrolled. "this" is the triggering element
+      easing: 'swing',
+      speed: 400
+    },
+    locationPath = filterPath(location.pathname),
+    getScrollable = function(opts) {
+      var scrollable = [],
+          scrolled = false,
+          dir = opts.dir && opts.dir == 'left' ? 'scrollLeft' : 'scrollTop';
 
-var locationPath = filterPath(location.pathname);
+      this.each(function() {
 
-  function getScrollable(els) {
-    var scrollable = [], scrolled = false;
+        if (this == document || this == window) { return; }
+        var el = $(this);
+        if ( el[dir]() > 0 ) {
+          scrollable.push(this);
+          return;
+        }
 
-    this.each(function() {
+        el[dir](1);
+        scrolled  = el[dir]() > 0;
+        el[dir](0);
+        if ( scrolled ) {
+          scrollable.push(this);
+          return;
+        }
 
-      if (this == document || this == window) { return; }
-      var el = $(this);
-      if ( el.scrollTop() > 0 ) {
-        scrollable.push(this);
-        return;
+      });
+
+      if ( opts.el === 'first' && scrollable.length ) {
+        scrollable = [ scrollable.shift() ];
       }
 
-      el.scrollTop(1);
-      scrolled  = el.scrollTop() > 0;
-      el.scrollTop(0);
-      if ( scrolled ) {
-        scrollable.push(this);
-        return;
-      }
+      return scrollable;
+    };
 
-    });
-
-    if ( els === 'first' && scrollable.length ) {
-      scrollable = [ scrollable.shift() ];
-    }
-
-    return scrollable;
-  }
 $.fn.extend({
-  scrollable: function() {
-    var scrl = getScrollable.call(this);
+  scrollable: function(dir) {
+    var scrl = getScrollable.call(this, {dir: dir});
     return this.pushStack(scrl);
   },
-  firstScrollable: function() {
-    var scrl = getScrollable.call(this, 'first');
+  firstScrollable: function(dir) {
+    var scrl = getScrollable.call(this, {el: 'first', dir: dir});
     return this.pushStack(scrl);
   },
 
@@ -106,7 +119,7 @@ $.smoothScroll = function(options, px) {
   var opts, $scroller, scrollTargetOffset,
       scrollerOffset = 0,
       offPos = 'offset',
-      dirs = {top: 'Top', 'left': 'Left'},
+      scrollDir = 'scrollTop',
       aniprops = {};
 
   if ( typeof options === 'number') {
@@ -127,15 +140,17 @@ $.smoothScroll = function(options, px) {
                         0;
   }
   opts = $.extend({link: null}, opts);
+  scrollDir = opts.direction == 'left' ? 'scrollLeft' : scrollDir;
 
   if ( opts.scrollElement ) {
     $scroller = opts.scrollElement;
-    scrollerOffset = $scroller.scrollTop();
+    scrollerOffset = $scroller[scrollDir]();
   } else {
     $scroller = $('html, body').firstScrollable();
   }
 
-  aniprops['scroll' + dirs[opts.direction]] = scrollTargetOffset + scrollerOffset + opts.offset;
+  aniprops[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
+
   $scroller.animate(aniprops,
   {
     duration: opts.speed,
@@ -152,18 +167,7 @@ $.smoothScroll = function(options, px) {
 $.smoothScroll.version = version;
 
 // default options
-$.fn.smoothScroll.defaults = {
-  exclude: [],
-  excludeWithin:[],
-  offset: 0,
-  direction: 'top', // one of 'top' or 'left'
-  scrollElement: null, // jQuery set of elements you wish to scroll.
-                      //if null (default), $('html, body').firstScrollable() is used.
-  scrollTarget: null, // only use if you want to override default behavior
-  afterScroll: null,   // function to be called after window is scrolled. "this" is the triggering element
-  easing: 'swing',
-  speed: 400
-};
+$.fn.smoothScroll.defaults = defaults;
 
 
 // private function
