@@ -66,6 +66,6 @@ The following option, in addition to those listed above, is available for `$.smo
 * The resulting jQuery set may consist of **zero or one** element.
 * This method is used *internally* by the plugin to determine which element to use for "document" scrolling: `$('html, body').firstScrollable().animate({scrollTop: someNumber}, someSpeed)`
 
-## Notes
+## Note
 
-* The plugin's `$.fn.smoothScroll` and `$.smoothScroll` methods use the `$.fn.firstScrollable` DOM traversal method (also defined by this plugin) to determine which
+* The plugin's `$.fn.smoothScroll` and `$.smoothScroll` methods use the `$.fn.firstScrollable` DOM traversal method (also defined by this plugin) to determine which element is scrollable. If no elements are scrollable, these methods return a jQuery object containing an empty array, just like all of jQuery's other DOM traversal methods. Any further chained methods, therefore, will be called against no elements (which, in most cases, means that nothing will happen).
