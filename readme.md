@@ -18,8 +18,6 @@
 The following options, shown with their default values, are available for both `$.fn.smoothScroll` and `$.smoothScroll`:
 
         {
-          exclude: [],
-          excludeWithin:[],
           offset: 0,
           direction: 'top', // one of 'top' or 'left'
           scrollTarget: null, // only use if you want to override default behavior
@@ -27,6 +25,9 @@ The following options, shown with their default values, are available for both `
           easing: 'swing',
           speed: 400
         }
+
+The options map for `$.fn.smoothScroll` can take two additional properties: `exclude` and `excludeWithin`. The value for both of these is an array of selectors, DOM elements or jQuery objects. Default value for both is an empty array.
+
 
 ### $.smoothScroll
 
