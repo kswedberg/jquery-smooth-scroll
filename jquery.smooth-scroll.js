@@ -1,7 +1,7 @@
 /*!
- * jQuery Smooth Scroll Plugin v1.4
+ * jQuery Smooth Scroll Plugin v1.4.1
  *
- * Date: Mon Apr 25 00:02:30 2011 EDT
+ * Date: Thu Oct 20 17:05:46 2011 EDT
  * Requires: jQuery v1.3+
  *
  * Copyright 2010, Karl Swedberg
@@ -16,7 +16,7 @@
 
 (function($) {
 
-var version = '1.4',
+var version = '1.4.1',
     defaults = {
       exclude: [],
       excludeWithin:[],
@@ -25,7 +25,8 @@ var version = '1.4',
       scrollElement: null, // jQuery set of elements you wish to scroll (for $.smoothScroll).
                           //  if null (default), $('html, body').firstScrollable() is used.
       scrollTarget: null, // only use if you want to override default behavior
-      afterScroll: null,   // function to be called after window is scrolled. "this" is the triggering element
+      beforeScroll: null,   // fn(opts) function to be called before scrolling occurs. "this" is the element(s) being scrolled
+      afterScroll: null,   // fn(opts) function to be called after scrolling occurs. "this" is the triggering element
       easing: 'swing',
       speed: 400
     },
@@ -150,6 +151,10 @@ $.smoothScroll = function(options, px) {
   }
 
   aniprops[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
+
+  if ( $.isFunction(opts.beforeScroll) ) {
+    opts.beforeScroll.call($scroller, opts);
+  }
 
   $scroller.animate(aniprops,
   {
