@@ -80,16 +80,15 @@ $.fn.extend({
       var link = this, $link = $(this),
           hostMatch = ((location.hostname === link.hostname) || !link.hostname),
           pathMatch = opts.scrollTarget || (filterPath(link.pathname) || locationPath) === locationPath,
-          thisHash = link.hash,
+          thisHash = escape_selector(link.hash),
           include = true;
-
 
       if ( !opts.scrollTarget && (!hostMatch || !pathMatch || !thisHash) ) {
         include = false;
       } else {
         var exclude = opts.exclude, elCounter = 0, el = exclude.length;
         while (include && elCounter < el) {
-          if ($link.is(exclude[elCounter++])) {
+          if ($link.is(escape_selector(exclude[elCounter++]))) {
             include = false;
           }
         }
@@ -181,6 +180,10 @@ function filterPath(string) {
     .replace(/^\//,'')
     .replace(/(index|default).[a-zA-Z]{3,4}$/,'')
     .replace(/\/$/,'');
+}
+
+function escape_selector (str) {
+  return str.replace(/(:|\.)/g,'\\$1');
 }
 
 })(jQuery);
