@@ -1,7 +1,7 @@
 /*!
  * jQuery Smooth Scroll Plugin v1.4.1
  *
- * Date: Thu Oct 20 17:05:46 2011 EDT
+ * Date: Tue Nov 15 14:24:14 2011 EST
  * Requires: jQuery v1.3+
  *
  * Copyright 2010, Karl Swedberg
@@ -77,10 +77,10 @@ $.fn.extend({
     var opts = $.extend({}, $.fn.smoothScroll.defaults, options);
     this.die('click.smoothscroll').live('click.smoothscroll', function(event) {
 
-      var link = this, $link = $(this),
+      var clickOpts = {}, link = this, $link = $(this),
           hostMatch = ((location.hostname === link.hostname) || !link.hostname),
           pathMatch = opts.scrollTarget || (filterPath(link.pathname) || locationPath) === locationPath,
-          thisHash = escape_selector(link.hash),
+          thisHash = escapeSelector(link.hash),
           include = true;
 
       if ( !opts.scrollTarget && (!hostMatch || !pathMatch || !thisHash) ) {
@@ -88,7 +88,7 @@ $.fn.extend({
       } else {
         var exclude = opts.exclude, elCounter = 0, el = exclude.length;
         while (include && elCounter < el) {
-          if ($link.is(escape_selector(exclude[elCounter++]))) {
+          if ($link.is(escapeSelector(exclude[elCounter++]))) {
             include = false;
           }
         }
@@ -102,17 +102,20 @@ $.fn.extend({
       }
 
       if ( include ) {
-        opts.scrollTarget = options.scrollTarget || thisHash;
-        opts.link = link;
         event.preventDefault();
-        $.smoothScroll(opts);
+
+        $.extend( clickOpts, opts, {
+          scrollTarget: opts.scrollTarget || thisHash,
+          link: link
+        });
+
+        $.smoothScroll( clickOpts );
       }
     });
 
     return this;
 
   }
-
 });
 
 $.smoothScroll = function(options, px) {
@@ -182,7 +185,7 @@ function filterPath(string) {
     .replace(/\/$/,'');
 }
 
-function escape_selector (str) {
+function escapeSelector (str) {
   return str.replace(/(:|\.)/g,'\\$1');
 }
 
