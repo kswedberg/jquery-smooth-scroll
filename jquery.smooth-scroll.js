@@ -1,7 +1,7 @@
 /*!
- * jQuery Smooth Scroll Plugin v1.4.1
+ * jQuery Smooth Scroll Plugin v1.4.2
  *
- * Date: Tue Nov 15 14:24:14 2011 EST
+ * Date: Tue Feb 14 17:34:02 2012 EST
  * Requires: jQuery v1.3+
  *
  * Copyright 2010, Karl Swedberg
@@ -16,7 +16,7 @@
 
 (function($) {
 
-var version = '1.4.1',
+var version = '1.4.2',
     defaults = {
       exclude: [],
       excludeWithin:[],
@@ -30,6 +30,7 @@ var version = '1.4.1',
       easing: 'swing',
       speed: 400
     },
+
     locationPath = filterPath(location.pathname),
     getScrollable = function(opts) {
       var scrollable = [],
@@ -60,7 +61,8 @@ var version = '1.4.1',
       }
 
       return scrollable;
-    };
+    },
+    isTouch = 'ontouchend' in document;
 
 $.fn.extend({
   scrollable: function(dir) {
@@ -123,7 +125,9 @@ $.smoothScroll = function(options, px) {
       scrollerOffset = 0,
       offPos = 'offset',
       scrollDir = 'scrollTop',
-      aniprops = {};
+      aniprops = {},
+      useScrollTo = false,
+      scrollprops = [];
 
   if ( typeof options === 'number') {
     opts = $.fn.smoothScroll.defaults;
@@ -150,6 +154,7 @@ $.smoothScroll = function(options, px) {
     scrollerOffset = $scroller[scrollDir]();
   } else {
     $scroller = $('html, body').firstScrollable();
+    useScrollTo = isTouch && 'scrollTo' in window;
   }
 
   aniprops[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
@@ -158,16 +163,21 @@ $.smoothScroll = function(options, px) {
     opts.beforeScroll.call($scroller, opts);
   }
 
-  $scroller.animate(aniprops,
-  {
-    duration: opts.speed,
-    easing: opts.easing,
-    complete: function() {
-      if ( opts.afterScroll && $.isFunction(opts.afterScroll) ) {
-        opts.afterScroll.call(opts.link, opts);
+  if ( useScrollTo ) {
+    scrollprops = (opts.direction == 'left') ? [aniprops[scrollDir], 0] : [0, aniprops[scrollDir]];
+    window.scrollTo.apply(window, scrollprops);
+  } else {
+    $scroller.animate(aniprops,
+    {
+      duration: opts.speed,
+      easing: opts.easing,
+      complete: function() {
+        if ( opts.afterScroll && $.isFunction(opts.afterScroll) ) {
+          opts.afterScroll.call(opts.link, opts);
+        }
       }
-    }
-  });
+    });
+  }
 
 };
 
