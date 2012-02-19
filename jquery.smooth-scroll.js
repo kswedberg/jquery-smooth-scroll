@@ -25,13 +25,13 @@ var version = '1.4.2',
       scrollElement: null, // jQuery set of elements you wish to scroll (for $.smoothScroll).
                           //  if null (default), $('html, body').firstScrollable() is used.
       scrollTarget: null, // only use if you want to override default behavior
-      beforeScroll: null,   // fn(opts) function to be called before scrolling occurs. "this" is the element(s) being scrolled
-      afterScroll: null,   // fn(opts) function to be called after scrolling occurs. "this" is the triggering element
+      beforeScroll: function() {},  // fn(opts) function to be called before scrolling occurs. "this" is the element(s) being scrolled
+      afterScroll: function() {},   // fn(opts) function to be called after scrolling occurs. "this" is the triggering element
       easing: 'swing',
       speed: 400
     },
 
-    locationPath = filterPath(location.pathname),
+    locationPath = $.smoothScroll.filterPath(location.pathname),
     getScrollable = function(opts) {
       var scrollable = [],
           scrolled = false,
@@ -81,7 +81,7 @@ $.fn.extend({
 
       var clickOpts = {}, link = this, $link = $(this),
           hostMatch = ((location.hostname === link.hostname) || !link.hostname),
-          pathMatch = opts.scrollTarget || (filterPath(link.pathname) || locationPath) === locationPath,
+          pathMatch = opts.scrollTarget || ( $.smoothScroll.filterPath(link.pathname) || locationPath ) === locationPath,
           thisHash = escapeSelector(link.hash),
           include = true;
 
@@ -159,22 +159,20 @@ $.smoothScroll = function(options, px) {
 
   aniprops[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
 
-  if ( $.isFunction(opts.beforeScroll) ) {
-    opts.beforeScroll.call($scroller, opts);
-  }
+  opts.beforeScroll.call($scroller, opts);
 
   if ( useScrollTo ) {
     scrollprops = (opts.direction == 'left') ? [aniprops[scrollDir], 0] : [0, aniprops[scrollDir]];
     window.scrollTo.apply(window, scrollprops);
+    opts.afterScroll.call(opts.link, opts);
+
   } else {
     $scroller.animate(aniprops,
     {
       duration: opts.speed,
       easing: opts.easing,
       complete: function() {
-        if ( opts.afterScroll && $.isFunction(opts.afterScroll) ) {
-          opts.afterScroll.call(opts.link, opts);
-        }
+        opts.afterScroll.call(opts.link, opts);
       }
     });
   }
@@ -182,18 +180,15 @@ $.smoothScroll = function(options, px) {
 };
 
 $.smoothScroll.version = version;
-
-// default options
-$.fn.smoothScroll.defaults = defaults;
-
-
-// private function
-function filterPath(string) {
+$.smoothScroll.filterPath = function(string) {
   return string
     .replace(/^\//,'')
     .replace(/(index|default).[a-zA-Z]{3,4}$/,'')
     .replace(/\/$/,'');
-}
+};
+
+// default options
+$.fn.smoothScroll.defaults = defaults;
 
 function escapeSelector (str) {
   return str.replace(/(:|\.)/g,'\\$1');
