@@ -1,7 +1,7 @@
 /*!
- * jQuery Smooth Scroll Plugin v1.4.2
+ * jQuery Smooth Scroll Plugin v1.4.3
  *
- * Date: Tue Feb 14 17:34:02 2012 EST
+ * Date: Sun Feb 19 13:01:33 2012 EST
  * Requires: jQuery v1.3+
  *
  * Copyright 2010, Karl Swedberg
@@ -16,7 +16,7 @@
 
 (function($) {
 
-var version = '1.4.2',
+var version = '1.4.3',
     defaults = {
       exclude: [],
       excludeWithin:[],
