@@ -31,7 +31,6 @@ var version = '1.4.3',
       speed: 400
     },
 
-    locationPath = $.smoothScroll.filterPath(location.pathname),
     getScrollable = function(opts) {
       var scrollable = [],
           scrolled = false,
@@ -76,7 +75,9 @@ $.fn.extend({
 
   smoothScroll: function(options) {
     options = options || {};
-    var opts = $.extend({}, $.fn.smoothScroll.defaults, options);
+    var opts = $.extend({}, $.fn.smoothScroll.defaults, options),
+        locationPath = $.smoothScroll.filterPath(location.pathname);
+
     this.die('click.smoothscroll').live('click.smoothscroll', function(event) {
 
       var clickOpts = {}, link = this, $link = $(this),
