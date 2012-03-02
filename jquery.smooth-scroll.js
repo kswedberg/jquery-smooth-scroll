@@ -28,7 +28,8 @@ var version = '1.4.4',
       beforeScroll: function() {},  // fn(opts) function to be called before scrolling occurs. "this" is the element(s) being scrolled
       afterScroll: function() {},   // fn(opts) function to be called after scrolling occurs. "this" is the triggering element
       easing: 'swing',
-      speed: 400
+      speed: 400,
+      auto_coeff: 2 // coefficient for "auto" speed
     },
 
     getScrollable = function(opts) {
@@ -168,6 +169,18 @@ $.smoothScroll = function(options, px) {
     opts.afterScroll.call(opts.link, opts);
 
   } else {
+    var speed;
+    if(opts.speed === 'auto') {
+        if(aniprops[scrollDir] === 0) {
+            speed = $('html').scrollTop();
+        } else {
+            speed = aniprops[scrollDir];
+        }
+    	speed = speed / opts.auto_coeff;
+    } else {
+        speed = opts.speed;
+    }
+
     $scroller.animate(aniprops,
     {
       duration: opts.speed,
