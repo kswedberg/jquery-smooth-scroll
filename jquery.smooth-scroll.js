@@ -1,10 +1,10 @@
 /*!
- * jQuery Smooth Scroll Plugin v1.4.4
+ * jQuery Smooth Scroll Plugin v1.4.5
  *
- * Date: Mon Feb 20 09:04:54 2012 EST
+ * Date: Sun Mar 11 18:17:42 2012 EDT
  * Requires: jQuery v1.3+
  *
- * Copyright 2010, Karl Swedberg
+ * Copyright 2012, Karl Swedberg
  * Dual licensed under the MIT and GPL licenses (just like jQuery):
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
@@ -29,7 +29,7 @@ var version = '1.4.4',
       afterScroll: function() {},   // fn(opts) function to be called after scrolling occurs. "this" is the triggering element
       easing: 'swing',
       speed: 400,
-      auto_coeff: 2 // coefficient for "auto" speed
+      autoCoefficent: 2 // coefficient for "auto" speed
     },
 
     getScrollable = function(opts) {
@@ -123,7 +123,7 @@ $.fn.extend({
 });
 
 $.smoothScroll = function(options, px) {
-  var opts, $scroller, scrollTargetOffset,
+  var opts, $scroller, scrollTargetOffset, speed,
       scrollerOffset = 0,
       offPos = 'offset',
       scrollDir = 'scrollTop',
@@ -169,21 +169,19 @@ $.smoothScroll = function(options, px) {
     opts.afterScroll.call(opts.link, opts);
 
   } else {
-    var speed;
-    if(opts.speed === 'auto') {
-        if(aniprops[scrollDir] === 0) {
-            speed = $('html').scrollTop();
-        } else {
-            speed = aniprops[scrollDir];
-        }
-    	speed = speed / opts.auto_coeff;
-    } else {
-        speed = opts.speed;
+    speed = opts.speed;
+
+    // automatically calculate the speed of the scroll based on distance / coefficient
+    if (speed === 'auto') {
+      // if aniprops[scrollDir] == 0 then we'll use scrollTop() value instead
+      speed = aniprops[scrollDir] || $scroller.scrollTop();
+      // divide the speed by the coefficient
+      speed = speed / opts.autoCoefficent;
     }
 
     $scroller.animate(aniprops,
     {
-      duration: opts.speed,
+      duration: speed,
       easing: opts.easing,
       complete: function() {
         opts.afterScroll.call(opts.link, opts);
