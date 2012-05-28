@@ -179,7 +179,7 @@ $.smoothScroll = function(options, px) {
       speed = speed / opts.autoCoefficent;
     }
 
-    $scroller.animate(aniprops,
+    $scroller.stop().animate(aniprops,
     {
       duration: speed,
       easing: opts.easing,
