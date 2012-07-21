@@ -1,10 +1,7 @@
-/*! Smooth Scroll - v1.4.5 - 2012-07-21
-* Copyright (c) 2012 Karl Swedberg; Licensed MIT, GPL */
-
 
 (function($) {
 
-var version = '1.4.5',
+var version = '@VERSION',
     defaults = {
       exclude: [],
       excludeWithin:[],
