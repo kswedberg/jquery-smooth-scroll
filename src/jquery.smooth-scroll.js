@@ -113,7 +113,8 @@ $.smoothScroll = function(options, px) {
       scrollerOffset = 0,
       offPos = 'offset',
       scrollDir = 'scrollTop',
-      aniprops = {},
+      aniProps = {},
+      aniOpts = {},
       useScrollTo = false,
       scrollprops = [];
 
@@ -134,6 +135,7 @@ $.smoothScroll = function(options, px) {
                         $(opts.scrollTarget)[offPos]()[opts.direction] ) ||
                         0;
   }
+
   opts = $.extend({link: null}, opts);
   scrollDir = opts.direction == 'left' ? 'scrollLeft' : scrollDir;
 
@@ -145,12 +147,12 @@ $.smoothScroll = function(options, px) {
     useScrollTo = isTouch && 'scrollTo' in window;
   }
 
-  aniprops[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
+  aniProps[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
 
   opts.beforeScroll.call($scroller, opts);
 
   if ( useScrollTo ) {
-    scrollprops = (opts.direction == 'left') ? [aniprops[scrollDir], 0] : [0, aniprops[scrollDir]];
+    scrollprops = (opts.direction == 'left') ? [aniProps[scrollDir], 0] : [0, aniProps[scrollDir]];
     window.scrollTo.apply(window, scrollprops);
     opts.afterScroll.call(opts.link, opts);
 
@@ -160,21 +162,26 @@ $.smoothScroll = function(options, px) {
     // automatically calculate the speed of the scroll based on distance / coefficient
     if (speed === 'auto') {
 
-      // if aniprops[scrollDir] == 0 then we'll use scrollTop() value instead
-      speed = aniprops[scrollDir] || $scroller.scrollTop();
+      // if aniProps[scrollDir] == 0 then we'll use scrollTop() value instead
+      speed = aniProps[scrollDir] || $scroller.scrollTop();
 
       // divide the speed by the coefficient
       speed = speed / opts.autoCoefficent;
     }
 
-    $scroller.stop().animate(aniprops,
-    {
+    aniOpts = {
       duration: speed,
       easing: opts.easing,
       complete: function() {
         opts.afterScroll.call(opts.link, opts);
       }
-    });
+    };
+
+    if (opts.step) {
+      aniOpts.step = opts.step;
+    }
+
+    $scroller.stop().animate(aniProps, aniOpts);
   }
 };
 
