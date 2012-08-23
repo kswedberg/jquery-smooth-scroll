@@ -1,9 +1,9 @@
-/*! Smooth Scroll - v1.4.5 - 2012-07-22
+/*! Smooth Scroll - v1.4.6 - 2012-08-23
 * Copyright (c) 2012 Karl Swedberg; Licensed MIT, GPL */
 
 (function($) {
 
-var version = '1.4.5',
+var version = '1.4.6',
     defaults = {
       exclude: [],
       excludeWithin:[],
@@ -34,15 +34,28 @@ var version = '1.4.5',
           // if scroll(Top|Left) === 0, nudge the element 1px and see if it moves
           el[dir](1);
           scrolled = el[dir]() > 0;
-          // then put it back, of course
-          el[dir](0);
           if ( scrolled ) {
             scrollable.push(this);
           }
+          // then put it back, of course
+          el[dir](0);
         }
       });
 
-      if ( opts.el === 'first' && scrollable.length ) {
+      // If no scrollable elements, fall back to <body>,
+      // if it's in the jQuery collection
+      // (doing this because Safari sets scrollTop async,
+      // so can't set it to 1 and immediately get the value.)
+      if (!scrollable.length) {
+        this.each(function(index) {
+          if (this.nodeName === 'BODY') {
+            scrollable = [this];
+          }
+        });
+      }
+
+      // Use the first scrollable element if we're calling firstScrollable()
+      if ( opts.el === 'first' && scrollable.length > 1 ) {
         scrollable = [ scrollable[0] ];
       }
 
@@ -107,7 +120,6 @@ $.fn.extend({
     });
 
     return this;
-
   }
 });
 
@@ -118,7 +130,6 @@ $.smoothScroll = function(options, px) {
       scrollDir = 'scrollTop',
       aniProps = {},
       aniOpts = {},
-      useScrollTo = false,
       scrollprops = [];
 
   if ( typeof options === 'number') {
@@ -147,48 +158,40 @@ $.smoothScroll = function(options, px) {
     scrollerOffset = $scroller[scrollDir]();
   } else {
     $scroller = $('html, body').firstScrollable();
-    useScrollTo = isTouch && 'scrollTo' in window;
   }
 
   aniProps[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
 
   opts.beforeScroll.call($scroller, opts);
 
-  if ( useScrollTo ) {
-    scrollprops = (opts.direction == 'left') ? [aniProps[scrollDir], 0] : [0, aniProps[scrollDir]];
-    window.scrollTo.apply(window, scrollprops);
-    opts.afterScroll.call(opts.link, opts);
+  speed = opts.speed;
 
-  } else {
-    speed = opts.speed;
+  // automatically calculate the speed of the scroll based on distance / coefficient
+  if (speed === 'auto') {
 
-    // automatically calculate the speed of the scroll based on distance / coefficient
-    if (speed === 'auto') {
+    // if aniProps[scrollDir] == 0 then we'll use scrollTop() value instead
+    speed = aniProps[scrollDir] || $scroller.scrollTop();
 
-      // if aniProps[scrollDir] == 0 then we'll use scrollTop() value instead
-      speed = aniProps[scrollDir] || $scroller.scrollTop();
+    // divide the speed by the coefficient
+    speed = speed / opts.autoCoefficent;
+  }
 
-      // divide the speed by the coefficient
-      speed = speed / opts.autoCoefficent;
-    }
-
-    aniOpts = {
-      duration: speed,
-      easing: opts.easing,
-      complete: function() {
-        opts.afterScroll.call(opts.link, opts);
-      }
-    };
-
-    if (opts.step) {
-      aniOpts.step = opts.step;
-    }
-
-    if ( $(document).height() > $(window).height ) {
-      $scroller.stop().animate(aniProps, aniOpts);
-    } else {
+  aniOpts = {
+    duration: speed,
+    easing: opts.easing,
+    complete: function() {
       opts.afterScroll.call(opts.link, opts);
     }
+  };
+
+  if (opts.step) {
+    aniOpts.step = opts.step;
+  }
+
+  if ($scroller.length) {
+    $scroller.stop().animate(aniProps, aniOpts);
+  } else {
+    opts.afterScroll.call(opts.link, opts);
   }
 };
 
