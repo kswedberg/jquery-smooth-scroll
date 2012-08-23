@@ -184,7 +184,11 @@ $.smoothScroll = function(options, px) {
       aniOpts.step = opts.step;
     }
 
-    $scroller.stop().animate(aniProps, aniOpts);
+    if ( $(document).height() > $(window).height ) {
+      $scroller.stop().animate(aniProps, aniOpts);
+    } else {
+      opts.afterScroll.call(opts.link, opts);
+    }
   }
 };
 
