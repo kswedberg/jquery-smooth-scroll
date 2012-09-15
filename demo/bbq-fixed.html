@@ -67,7 +67,6 @@
       });
 
       $(window).bind('hashchange', function(event) {
-        console.log('hashchange');
         var tgt = location.hash.replace(/^#\/?/,'');
         if ( document.getElementById(tgt) ) {
           $.smoothScroll({scrollTarget: '#' + tgt});
