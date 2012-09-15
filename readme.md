@@ -26,14 +26,19 @@ The following options, shown with their default values, are available for both `
           speed: 400
         }
 
-The options map for `$.fn.smoothScroll` can take two additional properties: `exclude` and `excludeWithin`. The value for both of these is an array of selectors, DOM elements or jQuery objects. Default value for both is an empty array.
+The options map for `$.fn.smoothScroll` can take two additional properties:
+`exclude` and `excludeWithin`. The value for both of these is an array of
+selectors, DOM elements or jQuery objects. Default value for both is an
+empty array.
 
 
 ### $.smoothScroll
 
 * Utility method works without a selector: `$.smoothScroll()`
-* Can be used to scroll any element (not just `document.documentElement` / `document.body`)
-* Doesn't automatically fire, so you need to bind it to some other user interaction. For example:
+* Can be used to scroll any element (not just `document.documentElement` /
+  `document.body`)
+* Doesn't automatically fire, so you need to bind it to some other user
+  interaction. For example:
 
         $('button.scrollsomething').click(function() {
           $.smoothScroll({
@@ -44,11 +49,14 @@ The options map for `$.fn.smoothScroll` can take two additional properties: `exc
         });
 
 * The `$.smoothScroll` method can take one or two arguments.
-  * If the first argument is a number, the document is scrolled to that position. If it's an options map, those options determine how the document (or other element) will be scrolled.
-  * If a number is provided as the second argument, it will override whatever may have been set for the `scrollTarget` option.
+    * If the first argument is a number, the document is scrolled to that 
+    position. If it's an options map, those options determine how the
+    document (or other element) will be scrolled.
+    * If a number is provided as the second argument, it will override whatever may have been set for the `scrollTarget` option.
 
 #### Additional Option
-The following option, in addition to those listed above, is available for `$.smoothScroll`:
+The following option, in addition to those listed above, is available
+for `$.smoothScroll`:
 
     {
       // jQuery set of elements you wish to scroll.
@@ -58,15 +66,27 @@ The following option, in addition to those listed above, is available for `$.smo
 
 ### $.fn.scrollable
 
-* Selects the matched element(s) that are scrollable. Acts just like a DOM traversal method such as `.find()` or `.next()`.
-* The resulting jQuery set may consist of **zero, one, or multiple** elements.
+* Selects the matched element(s) that are scrollable. Acts just like a
+  DOM traversal method such as `.find()` or `.next()`.
+* The resulting jQuery set may consist of **zero, one, or multiple**
+  elements.
 
 ### $.fn.firstScrollable
 
-* Selects the first matched element that is scrollable. Acts just like a DOM traversal method such as `.find()` or `.next()`.
+* Selects the first matched element that is scrollable. Acts just like a
+  DOM traversal method such as `.find()` or `.next()`.
 * The resulting jQuery set may consist of **zero or one** element.
-* This method is used *internally* by the plugin to determine which element to use for "document" scrolling: `$('html, body').firstScrollable().animate({scrollTop: someNumber}, someSpeed)`
+* This method is used *internally* by the plugin to determine which element
+  to use for "document" scrolling:
+  `$('html, body').firstScrollable().animate({scrollTop: someNumber},
+  someSpeed)`
 
 ## Note
 
-* The plugin's `$.fn.smoothScroll` and `$.smoothScroll` methods use the `$.fn.firstScrollable` DOM traversal method (also defined by this plugin) to determine which element is scrollable. If no elements are scrollable, these methods return a jQuery object containing an empty array, just like all of jQuery's other DOM traversal methods. Any further chained methods, therefore, will be called against no elements (which, in most cases, means that nothing will happen).
+* The plugin's `$.fn.smoothScroll` and `$.smoothScroll` methods use the 
+`$.fn.firstScrollable` DOM traversal method (also defined by this plugin)
+to determine which element is scrollable. If no elements are scrollable,
+these methods return a jQuery object containing an empty array, just like
+all of jQuery's other DOM traversal methods. Any further chained methods,
+therefore, will be called against no elements (which, in most cases,
+means that nothing will happen).
