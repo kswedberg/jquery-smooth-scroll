@@ -169,11 +169,15 @@ $.smoothScroll = function(options, px) {
   // automatically calculate the speed of the scroll based on distance / coefficient
   if (speed === 'auto') {
 
-    // if aniProps[scrollDir] == 0 then we'll use scrollTop() value instead
-    speed = aniProps[scrollDir] || $scroller.scrollTop();
+    // $scroller.scrollTop() is brefore scroll, aniProps[scrollDir] is after scroll
+    //'delta' is value changing. When 'delta' bigger, then 'speed' will be larger same and vice versa.
+    var delta = aniProps[scrollDir] - $scroller.scrollTop();
+    if(delta < 0) {
+      delta *= -1;
+    }
 
     // divide the speed by the coefficient
-    speed = speed / opts.autoCoefficent;
+    speed = delta / opts.autoCoefficent;
   }
 
   aniOpts = {
