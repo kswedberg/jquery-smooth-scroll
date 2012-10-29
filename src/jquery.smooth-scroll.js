@@ -129,7 +129,8 @@ $.smoothScroll = function(options, px) {
       aniOpts = {},
       scrollprops = [];
 
-  if ( typeof options === 'number') {
+
+  if (typeof options === 'number') {
     opts = $.fn.smoothScroll.defaults;
     scrollTargetOffset = options;
   } else {
@@ -140,11 +141,6 @@ $.smoothScroll = function(options, px) {
         opts.scrollElement.css('position', 'relative');
       }
     }
-
-    scrollTargetOffset = px ||
-                        ( $(opts.scrollTarget)[offPos]() &&
-                        $(opts.scrollTarget)[offPos]()[opts.direction] ) ||
-                        0;
   }
 
   opts = $.extend({link: null}, opts);
@@ -157,10 +153,16 @@ $.smoothScroll = function(options, px) {
     $scroller = $('html, body').firstScrollable();
   }
 
-  aniProps[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
-
+  // beforeScroll callback function must fire before calculating offset
   opts.beforeScroll.call($scroller, opts);
 
+  scrollTargetOffset = (typeof options === 'number') ? options :
+                        px ||
+                        ( $(opts.scrollTarget)[offPos]() &&
+                        $(opts.scrollTarget)[offPos]()[opts.direction] ) ||
+                        0;
+
+  aniProps[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
   speed = opts.speed;
 
   // automatically calculate the speed of the scroll based on distance / coefficient
