@@ -15,14 +15,14 @@ module.exports = function(grunt) {
     },
 		build: {
       built: {
-        src: ['<banner:meta.banner>', '<file_strip_banner:src/<%= pkg.name %>.js>'],
-        dest: './<%= pkg.name %>.js'
+        src: ['<banner:meta.banner>', '<file_strip_banner:src/jquery.<%= pkg.name %>.js>'],
+        dest: './jquery.<%= pkg.name %>.js'
       }
     },
     min: {
       dist: {
         src: ['<banner:meta.banner>', '<config:build.built.dest>'],
-        dest: './<%= pkg.name %>.min.js'
+        dest: './jquery.<%= pkg.name %>.min.js'
       }
     },
     lint: {
@@ -69,7 +69,6 @@ module.exports = function(grunt) {
     // compiled = '/* concatenated files:\n' + this.file.src.join(', ') + '\n*/\n\n' + compiled;
 
     // update components.json
-
     grunt.file.write( comp, JSON.stringify(pkg) );
 
 		// Embed Version
