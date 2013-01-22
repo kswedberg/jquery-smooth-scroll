@@ -1,9 +1,10 @@
-/*! Smooth Scroll - v1.4.8 - 2013-01-21
+/*! Smooth Scroll - v1.4.9 - 2013-01-21
+* https://github.com/kswedberg/jquery-smooth-scroll
 * Copyright (c) 2013 Karl Swedberg; Licensed MIT */
 
 (function($) {
 
-var version = '1.4.8',
+var version = '1.4.9',
     defaults = {
       exclude: [],
       excludeWithin:[],
