@@ -46,15 +46,14 @@
   <script src="../src/jquery.smooth-scroll.js"></script>
   <script src="../lib/jquery.ba-bbq.js"></script>
   <script>
-    $(document).ready(function() {
-
-      $('a[href*="#"]').live('click', function() {
-        if ( this.hash ) {
-          $.bbq.pushState( '#/' + this.hash.slice(1) );
-          return false;
-        }
-      });
-
+    $(document)
+    .on('click', 'a[href*="#"]', function() {
+      if ( this.hash ) {
+        $.bbq.pushState( '#/' + this.hash.slice(1) );
+        return false;
+      }
+    })
+    .ready(function() {
       $(window).bind('hashchange', function(event) {
         var tgt = location.hash.replace(/^#\/?/,'');
         if ( document.getElementById(tgt) ) {

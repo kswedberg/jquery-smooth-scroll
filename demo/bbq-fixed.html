@@ -53,7 +53,7 @@
   <script>
     $(document).ready(function() {
 
-      $('a[href*="#"]').live('click', function() {
+      $(document).on('click', 'a[href*="#"]', function() {
         var slashedHash = '#/' + this.hash.slice(1);
         if ( this.hash ) {
 
