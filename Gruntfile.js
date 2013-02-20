@@ -1,18 +1,28 @@
 /*global module:false*/
+
 module.exports = function(grunt) {
+
+  // Path to private settings (used here for user/pwd to rsync to remote site)
+
+
+  // Because I'm lazy
+  var _ = grunt.util._;
 
   // Project configuration.
   grunt.initConfig({
-    pkg: grunt.file.readJSON('smooth-scroll.jquery.json'),
     component: './component.json',
+    pkg: grunt.file.readJSON('smooth-scroll.jquery.json'),
     meta: {
-      banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
+      banner: '/*!<%= "\\n" %>' +
+          ' * <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
           '<%= grunt.template.today("yyyy-mm-dd")  + "\\n" %>' +
-          '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-          '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-          ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %>  */' +
-          '<%= "\\n\\n" %>',
-      version: '\\n \\nvar version = <%= pkg.version %>;\\n'
+          '<%= pkg.homepage ? " * " + pkg.homepage + "\\n" : "" %>' +
+          ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>' +
+          '<%= "\\n" %>' +
+          ' * Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %>' +
+          ' (<%= _.pluck(pkg.licenses, "url").join(", ") %>)' +
+          '<%= "\\n" %>' + ' */' +
+          '<%= "\\n\\n" %>'
     },
 		concat: {
       all: {
@@ -30,17 +40,30 @@ module.exports = function(grunt) {
           'jquery.<%= pkg.name %>.min.js': ['<%= concat.all.dest %>']
         },
         options: {
-          preserveComments: false,
-          banner: '<%= meta.banner %>'
+          preserveComments: 'some'
         }
       }
     },
     watch: {
-      files: '<config:lint.files>',
-      tasks: 'lint'
+      scripts: {
+        files: '<%= jshint.all %>',
+        tasks: ['jshint:all']
+      }
+    },
+    shell: {
+      rsync: {
+        // command is set by setshell:rsync.
+        stdout: true
+      }
+    },
+    setshell: {
+      rsync: {
+        file: 'gitignore/settings.json',
+        cmdAppend: '<%= pkg.name %>/'
+      }
     },
     jshint: {
-      files: ['grunt.js', 'src/**/*.js'],
+      all: ['Gruntfile.js', 'src/**/*.js'],
       options: {
         curly: true,
         // eqeqeq: true,
@@ -57,60 +80,92 @@ module.exports = function(grunt) {
           jQuery: true
         }
       }
+    },
+    version: {
+      patch: {
+        src: [
+          '<%= pkg.name %>.jquery.json',
+          'package.json',
+          'src/jquery.<%= pkg.name %>.js',
+          'jquery.<%= pkg.name %>.js'
+        ],
+        options: {
+          release: 'patch'
+        }
+      },
+      same: {
+        src: ['package.json', 'src/jquery.<%= pkg.name %>.js', 'jquery.<%= pkg.name %>.js']
+      },
+      bannerPatch: {
+        src: ['jquery.<%= pkg.name %>.js'],
+        options: {
+          prefix: '- v',
+          release: 'patch'
+        }
+      }
     }
   });
 
-  // Default task.
-  grunt.registerTask('build', ['jshint', 'concat', 'version', 'component', 'uglify']);
+  grunt.registerMultiTask( 'setshell', 'Set grunt shell commands', function() {
+    var settings, cmd,
+        tgt = this.target,
+        cmdLabel = 'shell.' + tgt + '.command',
+        file = this.data.file,
+        append = this.data.cmdAppend || '';
 
-  grunt.registerTask( 'component', 'update component.json', function() {
+    if ( !grunt.file.exists(file) ) {
+      grunt.warn('File does not exist: ' + file);
+    }
+
+    settings = grunt.file.readJSON(file);
+    if (!settings[tgt]) {
+      grunt.warn('No ' + tgt + ' property found in ' + file);
+    }
+
+    cmd = settings[tgt] + append;
+    grunt.config(cmdLabel, cmd);
+    grunt.log.writeln( ('Setting ' + cmdLabel + ' to:').cyan );
+
+    grunt.log.writeln(cmd);
+
+  });
+
+  grunt.registerTask( 'deploy', ['setshell:rsync', 'shell:rsync']);
+
+  grunt.registerTask( 'component', 'Update component.json', function() {
     var comp = grunt.config('component'),
-        pkg = grunt.config("pkg"),
+        pkgName = grunt.config('pkg').name,
+        pkg = grunt.file.readJSON(pkgName + '.jquery.json'),
         json = {};
+
+
 
     ['name', 'version', 'dependencies'].forEach(function(el) {
       json[el] = pkg[el];
     });
 
-    json.main = grunt.config('concat.all.dest');
-    json.ignore = [
-      'demo/',
-      'lib/',
-      'src/',
-      '*.json'
-    ];
+    _.extend(json, {
+      main: grunt.config('concat.all.dest'),
+      ignore: [
+        'demo/',
+        'lib/',
+        'src/',
+        '*.json'
+      ]
+    });
+    json.name = 'jquery.' + json.name;
 
     grunt.file.write( comp, JSON.stringify(json, null, 2) );
-
     grunt.log.writeln( "File '" + comp + "' updated." );
   });
 
-	grunt.registerTask( 'version', 'insert version', function() {
-		// Concat specified files.
-		var name = grunt.config('concat.all.dest'),
-        pkg = grunt.config("pkg"),
-        compiled = grunt.file.read(name),
-        version = "version = '" + pkg.version + "'";
-
-    // compiled = '/* concatenated files:\n' + this.file.src.join(', ') + '\n*/\n\n' + compiled;
-
-		// Embed Version
-    compiled = compiled.replace( /version = '[^']+'/, version );
-		// Write concatenated source to file
-		grunt.file.write( name, compiled );
-
-		// Fail task if errors were logged.
-		if ( this.errorCount ) {
-			return false;
-		}
-
-		// Otherwise, print a success message.
-		grunt.log.writeln( "File '" + name + "' created." );
-
-	});
+  grunt.registerTask('build', ['jshint', 'concat', 'version:same', 'component', 'uglify']);
+  grunt.registerTask('patch', ['jshint', 'concat', 'version:bannerPatch', 'version:patch', 'component', 'uglify']);
+  grunt.registerTask('default', ['build']);
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
-
+  grunt.loadNpmTasks('grunt-version');
+  grunt.loadNpmTasks('grunt-shell');
 };

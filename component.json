@@ -1,1 +1,14 @@
-{"name":"smooth-scroll","title":"Smooth Scroll","description":"Easy implementation of smooth scrolling for same-page links","version":"1.4.9","homepage":"https://github.com/kswedberg/jquery-smooth-scroll","author":{"name":"Karl Swedberg","email":"kswedberg@gmail.com","url":"http://www.learningjquery.com/"},"repository":{"type":"git","url":"https://github.com/kswedberg/jquery-smooth-scroll"},"bugs":{"url":"https://github.com/kswedberg/jquery-smooth-scroll/issues"},"licenses":[{"type":"MIT","url":"/blob/master/LICENSE-MIT"}],"dependencies":{"jquery":"~1.3"},"keywords":["scroll","animation"]}
+{
+  "name": "jquery.smooth-scroll",
+  "version": "1.4.10",
+  "dependencies": {
+    "jquery": ">=1.3"
+  },
+  "main": "jquery.smooth-scroll.js",
+  "ignore": [
+    "demo/",
+    "lib/",
+    "src/",
+    "*.json"
+  ]
+}

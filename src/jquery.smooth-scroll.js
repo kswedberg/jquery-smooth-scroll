@@ -1,6 +1,6 @@
 (function($) {
 
-var version = '@VERSION',
+var version = '1.4.10',
     defaults = {
       exclude: [],
       excludeWithin:[],

@@ -1,0 +1,16 @@
+{
+  "name": "smooth-scroll",
+  "version": "1.4.10",
+  "scripts": {
+    "test": "./node_modules/.bin/grunt"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.0",
+    "grunt-contrib-jshint": "~0.1.1",
+    "grunt-contrib-uglify": "~0.1.1",
+    "grunt-contrib-concat": "~0.1.2",
+    "grunt-shell": "~0.2",
+    "grunt-version": "~0.1.1"
+  }
+}
