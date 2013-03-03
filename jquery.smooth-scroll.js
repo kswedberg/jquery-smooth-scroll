@@ -1,8 +1,8 @@
 /*!
- * Smooth Scroll - v1.4.10 - 2013-02-20
+ * Smooth Scroll - v1.4.10 - 2013-03-02
  * https://github.com/kswedberg/jquery-smooth-scroll
  * Copyright (c) 2013 Karl Swedberg
- * Licensed MIT (/blob/master/LICENSE-MIT)
+ * Licensed MIT (https://github.com/kswedberg/jquery-smooth-scroll/blob/master/LICENSE-MIT)
  */
 
 (function($) {
@@ -12,15 +12,29 @@ var version = '1.4.10',
       exclude: [],
       excludeWithin:[],
       offset: 0,
-      direction: 'top', // one of 'top' or 'left'
-      scrollElement: null, // jQuery set of elements you wish to scroll (for $.smoothScroll).
-                          //  if null (default), $('html, body').firstScrollable() is used.
-      scrollTarget: null, // only use if you want to override default behavior
-      beforeScroll: function() {},  // fn(opts) function to be called before scrolling occurs. "this" is the element(s) being scrolled
-      afterScroll: function() {},   // fn(opts) function to be called after scrolling occurs. "this" is the triggering element
+
+      // one of 'top' or 'left'
+      direction: 'top',
+
+      // jQuery set of elements you wish to scroll (for $.smoothScroll).
+      //  if null (default), $('html, body').firstScrollable() is used.
+      scrollElement: null,
+
+      // only use if you want to override default behavior
+      scrollTarget: null,
+
+      // fn(opts) function to be called before scrolling occurs.
+      // `this` is the element(s) being scrolled
+      beforeScroll: function() {},
+
+      // fn(opts) function to be called after scrolling occurs.
+      // `this` is the triggering element
+      afterScroll: function() {},
       easing: 'swing',
       speed: 400,
-      autoCoefficent: 2 // coefficient for "auto" speed
+
+      // coefficient for "auto" speed
+      autoCoefficent: 2
     },
 
     getScrollable = function(opts) {
