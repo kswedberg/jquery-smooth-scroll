@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>jQuery Smooth Scroll Plugin</title>
+  <style>
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+  }
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    width: 94%;
+    margin: 0 auto;
+    padding: 0 3%;
+    max-width: 1120px;
+    font-size: 1em;
+    line-height: 1.5;
+    background-color: #fff;
+    color: #242424;
+  }
+  pre {
+    background-color: #f3f3f3;
+    padding: .25em;
+    border: 1px solid #ccc;
+    font-size: .9em;
+    overflow: auto;
+  }
+  code {
+    font-family: Monaco, Courier, monospace;
+  }
+  h1, h2, h3 {
+    font-weight: normal;
+    color: #141414;
+  }
+  h2 {
+    padding-bottom: .2em;
+    border-bottom: 1px solid #ccc;
+  }
+  .right {
+    float: right;
+  }
+  </style>
+</head>
+<body>
+
+<div class="right"><a href="demo/index.html">Demo</a></div>
+<h1>Smooth Scroll Plugin</h1>
+<h2>Features</h2>
+<h3>$.fn.smoothScroll</h3>
+<ul>
+<li>Allows for easy implementation of smooth scrolling for same-page links.</li>
+<li>Works like this: <code>$(&#39;a&#39;).smoothScroll();</code></li>
+<li>Specify a containing element if you want: <code>$(&#39;#container a&#39;).smoothScroll();</code></li>
+<li>Exclude links if they are within a containing element: <code>$(&#39;#container a&#39;).smoothScroll({excludeWithin: [&#39;.container2&#39;]});</code></li>
+<li>Exclude links if they match certain conditions: <code>$(&#39;a&#39;).smoothScroll({exclude: [&#39;.rough&#39;,&#39;#chunky&#39;]});</code></li>
+<li>Adjust where the scrolling stops: <code>$(&#39;.backtotop&#39;).smoothScroll({offset: -100});</code></li>
+<li>Add a callback function that is triggered before the scroll starts: `$(&#39;a&#39;).smoothScroll({beforeScroll: function() { alert(&#39;ready to go!&#39;); }});</li>
+<li>Add a callback function that is triggered after the scroll is complete: <code>$(&#39;a&#39;).smoothScroll({afterScroll: function() { alert(&#39;we made it!&#39;); }});</code></li>
+<li>Add back button support by including a history management plugin such as <a href="http://benalman.com/code/projects/jquery-bbq/docs/files/jquery-ba-bbq-js.html">Ben Alman&#39;s BBQ</a>. See <a href="demo/bbq.html">demo/bbq.html</a> for an example of how to implement this.</li>
+</ul>
+<h4>Options</h4>
+<p>The following options, shown with their default values, are available for both <code>$.fn.smoothScroll</code> and <code>$.smoothScroll</code>:</p>
+<pre><code class="lang-javascript">{
+  offset: 0,
+
+  // one of &#39;top&#39; or &#39;left&#39;
+  direction: &#39;top&#39;,
+
+  // only use if you want to override default behavior
+  scrollTarget: null,
+
+  // fn(opts) function to be called before scrolling occurs.
+  // `this` is the element(s) being scrolled
+  beforeScroll: function() {},
+
+  // fn(opts) function to be called after scrolling occurs.
+  // `this` is the triggering element
+  afterScroll: function() {},
+  easing: &#39;swing&#39;,
+  speed: 400,
+
+  // coefficient for &quot;auto&quot; speed
+  autoCoefficent: 2
+
+}</code></pre>
+<p>The options object for <code>$.fn.smoothScroll</code> can take two additional properties:
+<code>exclude</code> and <code>excludeWithin</code>. The value for both of these is an array of
+selectors, DOM elements or jQuery objects. Default value for both is an
+empty array.</p>
+<h3>$.smoothScroll</h3>
+<ul>
+<li>Utility method works without a selector: <code>$.smoothScroll()</code></li>
+<li>Can be used to scroll any element (not just <code>document.documentElement</code> /
+<code>document.body</code>)</li>
+<li><p>Doesn&#39;t automatically fire, so you need to bind it to some other user
+interaction. For example:</p>
+<pre><code>  $(&#39;button.scrollsomething&#39;).on(&#39;click&#39;, function() {
+    $.smoothScroll({
+      scrollElement: $(&#39;div.scrollme&#39;),
+      scrollTarget: &#39;#findme&#39;
+    });
+    return false;
+  });</code></pre>
+</li>
+<li><p>The <code>$.smoothScroll</code> method can take one or two arguments.</p>
+<ul>
+<li>If the first argument is a number, the document is scrolled to that
+position. If it&#39;s an options object, those options determine how the
+document (or other element) will be scrolled.</li>
+<li>If a number is provided as the second argument, it will override whatever may have been set for the <code>scrollTarget</code> option.</li>
+</ul>
+</li>
+</ul>
+<h4>Additional Option</h4>
+<p>The following option, in addition to those listed for <code>$.fn.smoothScroll</code> above, is available
+for <code>$.smoothScroll</code>:</p>
+<pre><code class="lang-javascript">{
+  // jQuery set of elements you wish to scroll.
+  //  if null (default), $(&#39;html, body&#39;).firstScrollable() is used.
+  scrollElement: null,
+}</code></pre>
+<h3>$.fn.scrollable</h3>
+<ul>
+<li>Selects the matched element(s) that are scrollable. Acts just like a
+DOM traversal method such as <code>.find()</code> or <code>.next()</code>.</li>
+<li>The resulting jQuery set may consist of <strong>zero, one, or multiple</strong>
+elements.</li>
+</ul>
+<h3>$.fn.firstScrollable</h3>
+<ul>
+<li>Selects the first matched element that is scrollable. Acts just like a
+DOM traversal method such as <code>.find()</code> or <code>.next()</code>.</li>
+<li>The resulting jQuery set may consist of <strong>zero or one</strong> element.</li>
+<li>This method is used <em>internally</em> by the plugin to determine which element
+to use for &quot;document&quot; scrolling:
+<code>$(&#39;html, body&#39;).firstScrollable().animate({scrollTop: someNumber},
+someSpeed)</code></li>
+</ul>
+<h2>Notes</h2>
+<ul>
+<li>To determine where to scroll the page, the <code>$.fn.smoothScroll</code> method looks
+for an element with an <em>id</em> attribute that matches the <code>&lt;a&gt;</code> element&#39;s hash.
+It does <em>not</em> look at the element&#39;s <em>name</em> attribute. If you want a clicked link
+to scroll to a &quot;named anchor&quot; (e.g. <code>&lt;a name=&quot;foo&quot;&gt;</code>), you&#39;ll need to use the
+<code>$.smoothScroll</code> method instead.</li>
+<li>The plugin&#39;s <code>$.fn.smoothScroll</code> and <code>$.smoothScroll</code> methods use the
+<code>$.fn.firstScrollable</code> DOM traversal method (also defined by this plugin)
+to determine which element is scrollable. If no elements are scrollable,
+these methods return a jQuery object containing an empty array, just like
+all of jQuery&#39;s other DOM traversal methods. Any further chained methods,
+therefore, will be called against no elements (which, in most cases,
+means that nothing will happen).</li>
+</ul>
+
+</body>
+</html>

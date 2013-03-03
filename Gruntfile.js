@@ -2,9 +2,6 @@
 
 module.exports = function(grunt) {
 
-  // Path to private settings (used here for user/pwd to rsync to remote site)
-
-
   // Because I'm lazy
   var _ = grunt.util._;
 
@@ -48,7 +45,12 @@ module.exports = function(grunt) {
       scripts: {
         files: '<%= jshint.all %>',
         tasks: ['jshint:all']
+      },
+      docs: {
+        files: ['readme.md', 'lib/tmpl/**/*.html'],
+        tasks: ['docs']
       }
+
     },
     shell: {
       rsync: {
@@ -77,7 +79,8 @@ module.exports = function(grunt) {
         eqnull: true,
         browser: true,
         globals: {
-          jQuery: true
+          jQuery: true,
+          require: false
         }
       }
     },
@@ -138,8 +141,6 @@ module.exports = function(grunt) {
         pkg = grunt.file.readJSON(pkgName + '.jquery.json'),
         json = {};
 
-
-
     ['name', 'version', 'dependencies'].forEach(function(el) {
       json[el] = pkg[el];
     });
@@ -159,13 +160,28 @@ module.exports = function(grunt) {
     grunt.log.writeln( "File '" + comp + "' updated." );
   });
 
-  grunt.registerTask('build', ['jshint', 'concat', 'version:same', 'component', 'uglify']);
+  grunt.registerTask('docs', function() {
+    var marked = require('marked'),
+        readme = grunt.file.read('readme.md'),
+        head = grunt.template.process(grunt.file.read('lib/tmpl/header.tpl')),
+        foot = grunt.file.read('lib/tmpl/footer.tpl'),
+        doc = marked(readme);
+
+    marked.setOptions({
+      gfm: true
+    });
+
+    grunt.file.write('index.html', head + doc + foot);
+  });
+
+  grunt.registerTask('build', ['jshint', 'concat', 'version:same', 'component', 'uglify', 'docs']);
   grunt.registerTask('patch', ['jshint', 'concat', 'version:bannerPatch', 'version:patch', 'component', 'uglify']);
   grunt.registerTask('default', ['build']);
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-version');
   grunt.loadNpmTasks('grunt-shell');
 };

@@ -10,23 +10,42 @@
 * Exclude links if they are within a containing element: `$('#container a').smoothScroll({excludeWithin: ['.container2']});`
 * Exclude links if they match certain conditions: `$('a').smoothScroll({exclude: ['.rough','#chunky']});`
 * Adjust where the scrolling stops: `$('.backtotop').smoothScroll({offset: -100});`
+* Add a callback function that is triggered before the scroll starts: `$('a').smoothScroll({beforeScroll: function() { alert('ready to go!'); }});
 * Add a callback function that is triggered after the scroll is complete: `$('a').smoothScroll({afterScroll: function() { alert('we made it!'); }});`
-* Add back button support by including a history management plugin such as "Ben Alman's BBQ":http://benalman.com/code/projects/jquery-bbq/docs/files/jquery-ba-bbq-js.html. See demo/bbq.html for an example of how to implement this.
+* Add back button support by including a history management plugin such as [Ben Alman's BBQ](http://benalman.com/code/projects/jquery-bbq/docs/files/jquery-ba-bbq-js.html). See [demo/bbq.html](demo/bbq.html) for an example of how to implement this.
+
 
 #### Options
 
 The following options, shown with their default values, are available for both `$.fn.smoothScroll` and `$.smoothScroll`:
 
-        {
-          offset: 0,
-          direction: 'top', // one of 'top' or 'left'
-          scrollTarget: null, // only use if you want to override default behavior
-          afterScroll: null,   // function to be called after scrolling occurs. "this" is the triggering element
-          easing: 'swing',
-          speed: 400
-        }
+```javascript
+{
+  offset: 0,
 
-The options map for `$.fn.smoothScroll` can take two additional properties:
+  // one of 'top' or 'left'
+  direction: 'top',
+
+  // only use if you want to override default behavior
+  scrollTarget: null,
+
+  // fn(opts) function to be called before scrolling occurs.
+  // `this` is the element(s) being scrolled
+  beforeScroll: function() {},
+
+  // fn(opts) function to be called after scrolling occurs.
+  // `this` is the triggering element
+  afterScroll: function() {},
+  easing: 'swing',
+  speed: 400,
+
+  // coefficient for "auto" speed
+  autoCoefficent: 2
+
+}
+```
+
+The options object for `$.fn.smoothScroll` can take two additional properties:
 `exclude` and `excludeWithin`. The value for both of these is an array of
 selectors, DOM elements or jQuery objects. Default value for both is an
 empty array.
@@ -40,7 +59,7 @@ empty array.
 * Doesn't automatically fire, so you need to bind it to some other user
   interaction. For example:
 
-        $('button.scrollsomething').click(function() {
+        $('button.scrollsomething').on('click', function() {
           $.smoothScroll({
             scrollElement: $('div.scrollme'),
             scrollTarget: '#findme'
@@ -49,20 +68,22 @@ empty array.
         });
 
 * The `$.smoothScroll` method can take one or two arguments.
-    * If the first argument is a number, the document is scrolled to that 
-    position. If it's an options map, those options determine how the
+    * If the first argument is a number, the document is scrolled to that
+    position. If it's an options object, those options determine how the
     document (or other element) will be scrolled.
     * If a number is provided as the second argument, it will override whatever may have been set for the `scrollTarget` option.
 
 #### Additional Option
-The following option, in addition to those listed above, is available
+The following option, in addition to those listed for `$.fn.smoothScroll` above, is available
 for `$.smoothScroll`:
 
-    {
-      // jQuery set of elements you wish to scroll.
-      //  if null (default), $('html, body').firstScrollable() is used.
-      scrollElement: null,
-    }
+```javascript
+{
+  // jQuery set of elements you wish to scroll.
+  //  if null (default), $('html, body').firstScrollable() is used.
+  scrollElement: null,
+}
+```
 
 ### $.fn.scrollable
 
@@ -81,9 +102,14 @@ for `$.smoothScroll`:
   `$('html, body').firstScrollable().animate({scrollTop: someNumber},
   someSpeed)`
 
-## Note
+## Notes
 
-* The plugin's `$.fn.smoothScroll` and `$.smoothScroll` methods use the 
+* To determine where to scroll the page, the `$.fn.smoothScroll` method looks
+for an element with an _id_ attribute that matches the `<a>` element's hash.
+It does _not_ look at the element's _name_ attribute. If you want a clicked link
+to scroll to a "named anchor" (e.g. `<a name="foo">`), you'll need to use the
+`$.smoothScroll` method instead.
+* The plugin's `$.fn.smoothScroll` and `$.smoothScroll` methods use the
 `$.fn.firstScrollable` DOM traversal method (also defined by this plugin)
 to determine which element is scrollable. If no elements are scrollable,
 these methods return a jQuery object containing an empty array, just like
