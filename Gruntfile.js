@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
-    component: './component.json',
+    bower: './bower.json',
     pkg: grunt.file.readJSON('smooth-scroll.jquery.json'),
     meta: {
       banner: '/*!<%= "\\n" %>' +
@@ -135,8 +135,8 @@ module.exports = function(grunt) {
 
   grunt.registerTask( 'deploy', ['setshell:rsync', 'shell:rsync']);
 
-  grunt.registerTask( 'component', 'Update component.json', function() {
-    var comp = grunt.config('component'),
+  grunt.registerTask( 'bower', 'Update bower.json', function() {
+    var comp = grunt.config('bower'),
         pkgName = grunt.config('pkg').name,
         pkg = grunt.file.readJSON(pkgName + '.jquery.json'),
         json = {};
@@ -160,7 +160,7 @@ module.exports = function(grunt) {
     grunt.log.writeln( "File '" + comp + "' updated." );
   });
 
-  grunt.registerTask('docs', function() {
+  grunt.registerTask('docs', 'Convert readme.md to html and concat with header and footer for index.html', function() {
     var marked = require('marked'),
         readme = grunt.file.read('readme.md'),
         head = grunt.template.process(grunt.file.read('lib/tmpl/header.tpl')),
@@ -174,8 +174,8 @@ module.exports = function(grunt) {
     grunt.file.write('index.html', head + doc + foot);
   });
 
-  grunt.registerTask('build', ['jshint', 'concat', 'version:same', 'component', 'uglify', 'docs']);
-  grunt.registerTask('patch', ['jshint', 'concat', 'version:bannerPatch', 'version:patch', 'component', 'uglify']);
+  grunt.registerTask('build', ['jshint', 'concat', 'version:same', 'bower', 'uglify', 'docs']);
+  grunt.registerTask('patch', ['jshint', 'concat', 'version:bannerPatch', 'version:patch', 'bower', 'uglify']);
   grunt.registerTask('default', ['build']);
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
