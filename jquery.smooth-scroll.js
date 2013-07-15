@@ -1,5 +1,5 @@
 /*!
- * Smooth Scroll - v1.4.10 - 2013-03-02
+ * Smooth Scroll - v1.4.11 - 2013-07-15
  * https://github.com/kswedberg/jquery-smooth-scroll
  * Copyright (c) 2013 Karl Swedberg
  * Licensed MIT (https://github.com/kswedberg/jquery-smooth-scroll/blob/master/LICENSE-MIT)
@@ -7,7 +7,7 @@
 
 (function($) {
 
-var version = '1.4.10',
+var version = '1.4.11',
     defaults = {
       exclude: [],
       excludeWithin:[],
@@ -34,7 +34,10 @@ var version = '1.4.10',
       speed: 400,
 
       // coefficient for "auto" speed
-      autoCoefficent: 2
+      autoCoefficent: 2,
+
+      // $.fn.smoothScroll only: whether to prevent the default click action
+      preventDefault: true
     },
 
     getScrollable = function(opts) {
@@ -126,7 +129,10 @@ $.fn.extend({
       }
 
       if ( include ) {
-        event.preventDefault();
+
+        if ( opts.preventDefault ) {
+          event.preventDefault();
+        }
 
         $.extend( clickOpts, opts, {
           scrollTarget: opts.scrollTarget || thisHash,

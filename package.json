@@ -1,6 +1,6 @@
 {
   "name": "smooth-scroll",
-  "version": "1.4.10",
+  "version": "1.4.11",
   "scripts": {
     "test": "./node_modules/.bin/grunt"
   },
@@ -13,5 +13,6 @@
     "grunt-shell": "~0.2",
     "grunt-version": "~0.1.1",
     "grunt-contrib-watch": "~0.3.1"
-  }
+  },
+  "readmeFilename": "readme.md"
 }

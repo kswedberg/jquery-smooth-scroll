@@ -40,7 +40,10 @@ The following options, shown with their default values, are available for both `
   speed: 400,
 
   // coefficient for "auto" speed
-  autoCoefficent: 2
+  autoCoefficent: 2,
+
+  // $.fn.smoothScroll only: whether to prevent the default click action
+  preventDefault: true
 
 }
 ```
