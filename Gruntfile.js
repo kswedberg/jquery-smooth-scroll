@@ -4,6 +4,18 @@ module.exports = function(grunt) {
 
   // Because I'm lazy
   var _ = grunt.util._;
+  var marked = require('marked');
+  // var hl = require('highlight').Highlight;
+  var hl = require('node-syntaxhighlighter');
+  marked.setOptions({
+    highlight: function(code, lang) {
+      lang = lang || 'javascript';
+      lang = hl.getLanguage(lang);
+
+      return hl.highlight(code, lang);
+    },
+    gfm: true
+  });
 
   // Project configuration.
   grunt.initConfig({
@@ -161,15 +173,11 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('docs', 'Convert readme.md to html and concat with header and footer for index.html', function() {
-    var marked = require('marked'),
-        readme = grunt.file.read('readme.md'),
+    var readme = grunt.file.read('readme.md'),
         head = grunt.template.process(grunt.file.read('lib/tmpl/header.tpl')),
         foot = grunt.file.read('lib/tmpl/footer.tpl'),
         doc = marked(readme);
 
-    marked.setOptions({
-      gfm: true
-    });
 
     grunt.file.write('index.html', head + doc + foot);
   });
