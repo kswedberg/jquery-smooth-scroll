@@ -1,13 +1,12 @@
 /*!
- * Smooth Scroll - v1.4.11 - 2013-07-15
+ * Smooth Scroll - v1.4.12 - 2013-09-19
  * https://github.com/kswedberg/jquery-smooth-scroll
  * Copyright (c) 2013 Karl Swedberg
  * Licensed MIT (https://github.com/kswedberg/jquery-smooth-scroll/blob/master/LICENSE-MIT)
  */
 
 (function($) {
-
-var version = '1.4.11',
+var version = '1.4.12',
     defaults = {
       exclude: [],
       excludeWithin:[],
@@ -44,7 +43,6 @@ var version = '1.4.11',
       var scrollable = [],
           scrolled = false,
           dir = opts.dir && opts.dir == 'left' ? 'scrollLeft' : 'scrollTop';
-
       this.each(function() {
 
         if (this == document || this == window) { return; }
@@ -175,9 +173,11 @@ $.smoothScroll = function(options, px) {
 
   if ( opts.scrollElement ) {
     $scroller = opts.scrollElement;
-    scrollerOffset = $scroller[scrollDir]();
+    if ( !(/^(?:HTML|BODY)$/).test($scroller[0].nodeName) ) {
+      scrollerOffset = $scroller[scrollDir]();
+    }
   } else {
-    $scroller = $('html, body').firstScrollable();
+    $scroller = $('html, body').firstScrollable(opts.direction);
   }
 
   // beforeScroll callback function must fire before calculating offset
@@ -225,7 +225,7 @@ $.smoothScroll.version = version;
 $.smoothScroll.filterPath = function(string) {
   return string
     .replace(/^\//,'')
-    .replace(/(index|default).[a-zA-Z]{3,4}$/,'')
+    .replace(/(?:index|default).[a-zA-Z]{3,4}$/,'')
     .replace(/\/$/,'');
 };
 
