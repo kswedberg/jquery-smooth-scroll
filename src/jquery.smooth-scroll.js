@@ -168,9 +168,11 @@ $.smoothScroll = function(options, px) {
 
   if ( opts.scrollElement ) {
     $scroller = opts.scrollElement;
-    scrollerOffset = $scroller[scrollDir]();
+    if ( !(/^(?:HTML|BODY)$/).test($scroller[0].nodeName) ) {
+      scrollerOffset = $scroller[scrollDir]();
+    }
   } else {
-    $scroller = $('html, body').firstScrollable();
+    $scroller = $('html, body').firstScrollable(opts.direction);
   }
 
   // beforeScroll callback function must fire before calculating offset
@@ -218,7 +220,7 @@ $.smoothScroll.version = version;
 $.smoothScroll.filterPath = function(string) {
   return string
     .replace(/^\//,'')
-    .replace(/(index|default).[a-zA-Z]{3,4}$/,'')
+    .replace(/(?:index|default).[a-zA-Z]{3,4}$/,'')
     .replace(/\/$/,'');
 };
 
