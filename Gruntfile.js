@@ -67,7 +67,9 @@ module.exports = function(grunt) {
     shell: {
       rsync: {
         // command is set by setshell:rsync.
-        stdout: true
+        options: {
+          stdout: true
+        }
       }
     },
     setshell: {

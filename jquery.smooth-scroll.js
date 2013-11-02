@@ -1,12 +1,13 @@
 /*!
- * Smooth Scroll - v1.4.12 - 2013-09-19
+ * Smooth Scroll - v1.4.13 - 2013-11-02
  * https://github.com/kswedberg/jquery-smooth-scroll
  * Copyright (c) 2013 Karl Swedberg
  * Licensed MIT (https://github.com/kswedberg/jquery-smooth-scroll/blob/master/LICENSE-MIT)
  */
 
 (function($) {
-var version = '1.4.12',
+var version = '1.4.13',
+    optionOverrides = {},
     defaults = {
       exclude: [],
       excludeWithin:[],
@@ -43,6 +44,7 @@ var version = '1.4.12',
       var scrollable = [],
           scrolled = false,
           dir = opts.dir && opts.dir == 'left' ? 'scrollLeft' : 'scrollTop';
+
       this.each(function() {
 
         if (this == document || this == window) { return; }
@@ -92,8 +94,21 @@ $.fn.extend({
     return this.pushStack(scrl);
   },
 
-  smoothScroll: function(options) {
+  smoothScroll: function(options, extra) {
     options = options || {};
+
+    if ( options === 'options' ) {
+      if ( !extra ) {
+        return this.first().data('ssOpts');
+      }
+      return this.each(function() {
+        var $this = $(this),
+            opts = $.extend($this.data('ssOpts') || {}, extra);
+
+        $(this).data('ssOpts', opts);
+      });
+    }
+
     var opts = $.extend({}, $.fn.smoothScroll.defaults, options),
         locationPath = $.smoothScroll.filterPath(location.pathname);
 
@@ -102,16 +117,17 @@ $.fn.extend({
     .bind('click.smoothscroll', function(event) {
       var link = this,
           $link = $(this),
+          thisOpts = $.extend({}, opts, $link.data('ssOpts') || {}),
           exclude = opts.exclude,
-          excludeWithin = opts.excludeWithin,
+          excludeWithin = thisOpts.excludeWithin,
           elCounter = 0, ewlCounter = 0,
           include = true,
           clickOpts = {},
           hostMatch = ((location.hostname === link.hostname) || !link.hostname),
-          pathMatch = opts.scrollTarget || ( $.smoothScroll.filterPath(link.pathname) || locationPath ) === locationPath,
+          pathMatch = thisOpts.scrollTarget || ( $.smoothScroll.filterPath(link.pathname) || locationPath ) === locationPath,
           thisHash = escapeSelector(link.hash);
 
-      if ( !opts.scrollTarget && (!hostMatch || !pathMatch || !thisHash) ) {
+      if ( !thisOpts.scrollTarget && (!hostMatch || !pathMatch || !thisHash) ) {
         include = false;
       } else {
         while (include && elCounter < exclude.length) {
@@ -128,15 +144,14 @@ $.fn.extend({
 
       if ( include ) {
 
-        if ( opts.preventDefault ) {
+        if ( thisOpts.preventDefault ) {
           event.preventDefault();
         }
 
-        $.extend( clickOpts, opts, {
-          scrollTarget: opts.scrollTarget || thisHash,
+        $.extend( clickOpts, thisOpts, {
+          scrollTarget: thisOpts.scrollTarget || thisHash,
           link: link
         });
-
         $.smoothScroll( clickOpts );
       }
     });
@@ -146,6 +161,9 @@ $.fn.extend({
 });
 
 $.smoothScroll = function(options, px) {
+  if ( options === 'options' && typeof px === 'object' ) {
+    return $.extend(optionOverrides, px);
+  }
   var opts, $scroller, scrollTargetOffset, speed,
       scrollerOffset = 0,
       offPos = 'offset',
@@ -154,12 +172,11 @@ $.smoothScroll = function(options, px) {
       aniOpts = {},
       scrollprops = [];
 
-
   if (typeof options === 'number') {
-    opts = $.fn.smoothScroll.defaults;
+    opts = $.extend({link: null}, $.fn.smoothScroll.defaults, optionOverrides);
     scrollTargetOffset = options;
   } else {
-    opts = $.extend({}, $.fn.smoothScroll.defaults, options || {});
+    opts = $.extend({link: null}, $.fn.smoothScroll.defaults, options || {}, optionOverrides);
     if (opts.scrollElement) {
       offPos = 'position';
       if (opts.scrollElement.css('position') == 'static') {
@@ -168,7 +185,6 @@ $.smoothScroll = function(options, px) {
     }
   }
 
-  opts = $.extend({link: null}, opts);
   scrollDir = opts.direction == 'left' ? 'scrollLeft' : scrollDir;
 
   if ( opts.scrollElement ) {
