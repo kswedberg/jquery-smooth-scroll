@@ -53,6 +53,11 @@ The options object for `$.fn.smoothScroll` can take two additional properties:
 selectors, DOM elements or jQuery objects. Default value for both is an
 empty array.
 
+#### Setting options after initial call
+
+If you need to change any of the options after you've already called `.smoothScroll()`,
+you can do so by passing the `"options"` string as the first argument and an
+options object as the second.
 
 ### $.smoothScroll
 
@@ -84,7 +89,7 @@ for `$.smoothScroll`:
 {
   // jQuery set of elements you wish to scroll.
   //  if null (default), $('html, body').firstScrollable() is used.
-  scrollElement: null,
+  scrollElement: null
 }
 ```
 
