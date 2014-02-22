@@ -145,6 +145,7 @@ $.fn.extend({
           scrollTarget: thisOpts.scrollTarget || thisHash,
           link: link
         });
+
         $.smoothScroll( clickOpts );
       }
     });
@@ -232,6 +233,7 @@ $.smoothScroll = function(options, px) {
 
 $.smoothScroll.version = version;
 $.smoothScroll.filterPath = function(string) {
+  string = string || '';
   return string
     .replace(/^\//,'')
     .replace(/(?:index|default).[a-zA-Z]{3,4}$/,'')
