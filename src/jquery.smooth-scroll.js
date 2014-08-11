@@ -36,11 +36,11 @@ var version = '1.4.13',
     getScrollable = function(opts) {
       var scrollable = [],
           scrolled = false,
-          dir = opts.dir && opts.dir == 'left' ? 'scrollLeft' : 'scrollTop';
+          dir = opts.dir && opts.dir === 'left' ? 'scrollLeft' : 'scrollTop';
 
       this.each(function() {
 
-        if (this == document || this == window) { return; }
+        if (this === document || this === window) { return; }
         var el = $(this);
         if ( el[dir]() > 0 ) {
           scrollable.push(this);
@@ -61,7 +61,7 @@ var version = '1.4.13',
       // (doing this because Safari sets scrollTop async,
       // so can't set it to 1 and immediately get the value.)
       if (!scrollable.length) {
-        this.each(function(index) {
+        this.each(function() {
           if (this.nodeName === 'BODY') {
             scrollable = [this];
           }
@@ -74,8 +74,7 @@ var version = '1.4.13',
       }
 
       return scrollable;
-    },
-    isTouch = 'ontouchend' in document;
+    };
 
 $.fn.extend({
   scrollable: function(dir) {
@@ -163,8 +162,7 @@ $.smoothScroll = function(options, px) {
       offPos = 'offset',
       scrollDir = 'scrollTop',
       aniProps = {},
-      aniOpts = {},
-      scrollprops = [];
+      aniOpts = {};
 
   if (typeof options === 'number') {
     opts = $.extend({link: null}, $.fn.smoothScroll.defaults, optionOverrides);
@@ -173,13 +171,13 @@ $.smoothScroll = function(options, px) {
     opts = $.extend({link: null}, $.fn.smoothScroll.defaults, options || {}, optionOverrides);
     if (opts.scrollElement) {
       offPos = 'position';
-      if (opts.scrollElement.css('position') == 'static') {
+      if (opts.scrollElement.css('position') === 'static') {
         opts.scrollElement.css('position', 'relative');
       }
     }
   }
 
-  scrollDir = opts.direction == 'left' ? 'scrollLeft' : scrollDir;
+  scrollDir = opts.direction === 'left' ? 'scrollLeft' : scrollDir;
 
   if ( opts.scrollElement ) {
     $scroller = opts.scrollElement;
