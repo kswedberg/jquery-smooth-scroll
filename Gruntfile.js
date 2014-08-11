@@ -2,8 +2,6 @@
 
 module.exports = function(grunt) {
 
-  // Because I'm lazy
-  var _ = grunt.util._;
   var marked = require('marked');
   // var hl = require('highlight').Highlight;
   var hl = require('node-syntaxhighlighter');
@@ -20,7 +18,7 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     bower: './bower.json',
-    pkg: grunt.file.readJSON('smooth-scroll.jquery.json'),
+    pkg: grunt.file.readJSON('package.json'),
     meta: {
       banner: '/*!<%= "\\n" %>' +
           ' * <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
@@ -150,29 +148,32 @@ module.exports = function(grunt) {
 
   grunt.registerTask( 'deploy', ['setshell:rsync', 'shell:rsync']);
 
-  grunt.registerTask( 'bower', 'Update bower.json', function() {
-    var comp = grunt.config('bower'),
-        pkgName = grunt.config('pkg').name,
-        pkg = grunt.file.readJSON(pkgName + '.jquery.json'),
-        json = {};
+  grunt.registerTask( 'configs', 'Update json configs based on package.json', function() {
+    var rjQuery = /^jquery\./,
+        bowerFile = grunt.config('bower'),
+        bower = grunt.file.readJSON(bowerFile),
+        pkg = grunt.config('pkg'),
+        jqConfigFile = pkg.name.replace(rjQuery, '') + '.jquery.json',
+        jqConfig = grunt.file.readJSON(jqConfigFile);
 
-    ['name', 'version', 'dependencies'].forEach(function(el) {
-      json[el] = pkg[el];
+    ['name', 'main', 'version', 'dependencies', 'keywords'].forEach(function(el) {
+      bower[el] = pkg[el];
+      jqConfig[el] = pkg[el];
     });
 
-    _.extend(json, {
-      main: grunt.config('concat.all.dest'),
-      ignore: [
-        'demo/',
-        'lib/',
-        'src/',
-        '*.json'
-      ]
-    });
-    json.name = 'jquery.' + json.name;
 
-    grunt.file.write( comp, JSON.stringify(json, null, 2) );
-    grunt.log.writeln( 'File "' + comp + '" updated."' );
+    ['author', 'repository', 'homepage', 'docs', 'bugs', 'demo', 'licenses'].forEach(function(el) {
+      jqConfig[el] = pkg[el];
+    });
+
+    jqConfig.keywords.shift();
+    jqConfig.name = jqConfig.name.replace(rjQuery, '');
+
+    grunt.file.write( bowerFile, JSON.stringify(bower, null, 2) + '\n');
+    grunt.log.writeln( 'File "' + bowerFile + '" updated."' );
+
+    grunt.file.write( jqConfigFile, JSON.stringify(jqConfig, null, 2) + '\n');
+    grunt.log.writeln( 'File "' + jqConfigFile + '" updated."' );
   });
 
   grunt.registerTask('docs', 'Convert readme.md to html and concat with header and footer for index.html', function() {
@@ -185,8 +186,8 @@ module.exports = function(grunt) {
     grunt.file.write('index.html', head + doc + foot);
   });
 
-  grunt.registerTask('build', ['jshint', 'concat', 'version:same', 'bower', 'uglify', 'docs']);
-  grunt.registerTask('patch', ['jshint', 'concat', 'version:bannerPatch', 'version:patch', 'bower', 'uglify']);
+  grunt.registerTask('build', ['jshint', 'concat', 'version:same', 'configs', 'uglify', 'docs']);
+  grunt.registerTask('patch', ['jshint', 'concat', 'version:bannerPatch', 'version:patch', 'configs', 'uglify']);
   grunt.registerTask('default', ['build']);
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
