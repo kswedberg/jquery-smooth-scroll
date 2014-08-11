@@ -171,7 +171,7 @@ module.exports = function(grunt) {
     json.name = 'jquery.' + json.name;
 
     grunt.file.write( comp, JSON.stringify(json, null, 2) );
-    grunt.log.writeln( "File '" + comp + "' updated." );
+    grunt.log.writeln( 'File "' + comp + '" updated."' );
   });
 
   grunt.registerTask('docs', 'Convert readme.md to html and concat with header and footer for index.html', function() {

@@ -9,6 +9,8 @@
     "demo/",
     "lib/",
     "src/",
-    "*.json"
+    "Gruntfile.js",
+    "package.json",
+    "smooth-scroll.jquery.json"
   ]
 }
