@@ -158,7 +158,7 @@ $.smoothScroll = function(options, px) {
   if ( options === 'options' && typeof px === 'object' ) {
     return $.extend(optionOverrides, px);
   }
-  var opts, $scroller, scrollTargetOffset, speed,
+  var opts, $scroller, scrollTargetOffset, speed, delta,
       scrollerOffset = 0,
       offPos = 'offset',
       scrollDir = 'scrollTop',
@@ -205,11 +205,15 @@ $.smoothScroll = function(options, px) {
   // automatically calculate the speed of the scroll based on distance / coefficient
   if (speed === 'auto') {
 
-    // if aniProps[scrollDir] == 0 then we'll use scrollTop() value instead
-    speed = aniProps[scrollDir] || $scroller.scrollTop();
+    // $scroller.scrollTop() is position before scroll, aniProps[scrollDir] is position after
+    // When delta is greater, speed will be greater.
+    delta = aniProps[scrollDir] - $scroller.scrollTop();
+    if(delta < 0) {
+      delta *= -1;
+    }
 
-    // divide the speed by the coefficient
-    speed = speed / opts.autoCoefficent;
+    // Divide the delta by the coefficient
+    speed = delta / opts.autoCoefficent;
   }
 
   aniOpts = {
