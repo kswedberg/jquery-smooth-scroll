@@ -27,7 +27,7 @@ var version = '1.4.13',
       speed: 400,
 
       // coefficient for "auto" speed
-      autoCoefficent: 2,
+      autoCoefficient: 2,
 
       // $.fn.smoothScroll only: whether to prevent the default click action
       preventDefault: true
@@ -211,7 +211,7 @@ $.smoothScroll = function(options, px) {
     }
 
     // Divide the delta by the coefficient
-    speed = delta / opts.autoCoefficent;
+    speed = delta / opts.autoCoefficient;
   }
 
   aniOpts = {

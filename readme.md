@@ -37,10 +37,15 @@ The following options, shown with their default values, are available for both `
   // `this` is the triggering element
   afterScroll: function() {},
   easing: 'swing',
+
+  // speed can be a number or 'auto'
+  // if 'auto', the speed will be calculated based on the formula:
+  // (current scroll position - target scroll position) / autoCoeffic
   speed: 400,
 
-  // coefficient for "auto" speed
-  autoCoefficent: 2,
+  // autoCoefficent: Only used when speed set to "auto".
+  // The higher this number, the faster the scroll speed
+  autoCoefficient: 2,
 
   // $.fn.smoothScroll only: whether to prevent the default click action
   preventDefault: true
