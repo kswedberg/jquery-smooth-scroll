@@ -116,7 +116,7 @@ $.fn.extend({
           include = true,
           clickOpts = {},
           hostMatch = ((location.hostname === link.hostname) || !link.hostname),
-          pathMatch = thisOpts.scrollTarget || ( $.smoothScroll.filterPath(link.pathname) || locationPath ) === locationPath,
+          pathMatch = thisOpts.scrollTarget || ( $.smoothScroll.filterPath(link.pathname) === locationPath ),
           thisHash = escapeSelector(link.hash);
 
       if ( !thisOpts.scrollTarget && (!hostMatch || !pathMatch || !thisHash) ) {
