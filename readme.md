@@ -1,10 +1,30 @@
 # Smooth Scroll Plugin
 
+Allows for easy implementation of smooth scrolling for same-page links.
+
+## Download
+
+Using npm:
+
+```bash
+npm install jquery-smooth-scroll
+```
+
+Using bower:
+
+```bash
+bower install jquery-smooth-scroll
+```
+
+The old-fashioned way:
+
+Go to the following URL in your browser and copy/paste the code into your own file:
+https://raw.githubusercontent.com/kswedberg/jquery-smooth-scroll/master/jquery.smooth-scroll.js
+
 ## Features
 
 ### $.fn.smoothScroll
 
-* Allows for easy implementation of smooth scrolling for same-page links.
 * Works like this: `$('a').smoothScroll();`
 * Specify a containing element if you want: `$('#container a').smoothScroll();`
 * Exclude links if they are within a containing element: `$('#container a').smoothScroll({excludeWithin: ['.container2']});`

@@ -87,8 +87,9 @@ module.exports = function(grunt) {
     version: {
       patch: {
         src: [
-          '<%= pluginName %>.jquery.json',
           'package.json',
+          '<%= pluginName %>.jquery.json',
+          'bower.json',
           'src/jquery.<%= pluginName %>.js',
           'jquery.<%= pluginName %>.js'
         ],
@@ -136,7 +137,7 @@ module.exports = function(grunt) {
   grunt.registerTask( 'deploy', ['setshell:rsync', 'shell:rsync']);
 
   grunt.registerTask( 'configs', 'Update json configs based on package.json', function() {
-    var pkg = grunt.config('pkg'),
+    var pkg = grunt.file.readJSON('package.json'),
         pkgBasename = grunt.config('pluginName'),
         bowerFile = grunt.config('bower'),
         bower = grunt.file.readJSON(bowerFile),
