@@ -17,11 +17,12 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    pluginName: 'smooth-scroll',
     bower: './bower.json',
     pkg: grunt.file.readJSON('package.json'),
     meta: {
       banner: '/*!<%= "\\n" %>' +
-          ' * <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
+          ' * <%= pkg.title %> - v<%= pkg.version %> - ' +
           '<%= grunt.template.today("yyyy-mm-dd")  + "\\n" %>' +
           '<%= pkg.homepage ? " * " + pkg.homepage + "\\n" : "" %>' +
           ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>' +
@@ -33,8 +34,8 @@ module.exports = function(grunt) {
     },
 		concat: {
       all: {
-        src: ['src/jquery.<%= pkg.name %>.js'],
-        dest: 'jquery.<%= pkg.name %>.js'
+        src: ['src/jquery.<%= pluginName %>.js'],
+        dest: 'jquery.<%= pluginName %>.js'
       },
       options: {
         stripBanners: true,
@@ -44,7 +45,7 @@ module.exports = function(grunt) {
     uglify: {
       all: {
         files: {
-          'jquery.<%= pkg.name %>.min.js': ['<%= concat.all.dest %>']
+          'jquery.<%= pluginName %>.min.js': ['<%= concat.all.dest %>']
         },
         options: {
           preserveComments: 'some'
@@ -61,20 +62,6 @@ module.exports = function(grunt) {
         tasks: ['docs']
       }
 
-    },
-    shell: {
-      rsync: {
-        // command is set by setshell:rsync.
-        options: {
-          stdout: true
-        }
-      }
-    },
-    setshell: {
-      rsync: {
-        file: 'gitignore/settings.json',
-        cmdAppend: '<%= pkg.name %>/'
-      }
     },
     jshint: {
       all: ['Gruntfile.js', 'src/**/*.js'],
@@ -100,20 +87,20 @@ module.exports = function(grunt) {
     version: {
       patch: {
         src: [
-          '<%= pkg.name %>.jquery.json',
+          '<%= pluginName %>.jquery.json',
           'package.json',
-          'src/jquery.<%= pkg.name %>.js',
-          'jquery.<%= pkg.name %>.js'
+          'src/jquery.<%= pluginName %>.js',
+          'jquery.<%= pluginName %>.js'
         ],
         options: {
           release: 'patch'
         }
       },
       same: {
-        src: ['package.json', 'src/jquery.<%= pkg.name %>.js', 'jquery.<%= pkg.name %>.js']
+        src: ['package.json', 'src/jquery.<%= pluginName %>.js', 'jquery.<%= pluginName %>.js']
       },
       bannerPatch: {
-        src: ['jquery.<%= pkg.name %>.js'],
+        src: ['jquery.<%= pluginName %>.js'],
         options: {
           prefix: '- v',
           release: 'patch'
@@ -149,25 +136,25 @@ module.exports = function(grunt) {
   grunt.registerTask( 'deploy', ['setshell:rsync', 'shell:rsync']);
 
   grunt.registerTask( 'configs', 'Update json configs based on package.json', function() {
-    var rjQuery = /^jquery\./,
+    var pkg = grunt.config('pkg'),
+        pkgBasename = grunt.config('pluginName'),
         bowerFile = grunt.config('bower'),
         bower = grunt.file.readJSON(bowerFile),
-        pkg = grunt.config('pkg'),
-        jqConfigFile = pkg.name.replace(rjQuery, '') + '.jquery.json',
+        jqConfigFile = pkgBasename + '.jquery.json',
         jqConfig = grunt.file.readJSON(jqConfigFile);
 
-    ['name', 'main', 'version', 'dependencies', 'keywords'].forEach(function(el) {
+    ['main', 'version', 'dependencies', 'keywords'].forEach(function(el) {
       bower[el] = pkg[el];
       jqConfig[el] = pkg[el];
     });
-
 
     ['author', 'repository', 'homepage', 'docs', 'bugs', 'demo', 'licenses'].forEach(function(el) {
       jqConfig[el] = pkg[el];
     });
 
     jqConfig.keywords.shift();
-    jqConfig.name = jqConfig.name.replace(rjQuery, '');
+    jqConfig.name = pkgBasename;
+    bower.name = 'jquery.' + pkgBasename;
 
     grunt.file.write( bowerFile, JSON.stringify(bower, null, 2) + '\n');
     grunt.log.writeln( 'File "' + bowerFile + '" updated."' );
@@ -178,10 +165,9 @@ module.exports = function(grunt) {
 
   grunt.registerTask('docs', 'Convert readme.md to html and concat with header and footer for index.html', function() {
     var readme = grunt.file.read('readme.md'),
-        head = grunt.template.process(grunt.file.read('lib/tmpl/header.tpl')),
+        head = grunt.template.process( grunt.file.read('lib/tmpl/header.tpl') ),
         foot = grunt.file.read('lib/tmpl/footer.tpl'),
         doc = marked(readme);
-
 
     grunt.file.write('index.html', head + doc + foot);
   });

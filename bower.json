@@ -12,5 +12,9 @@
     "Gruntfile.js",
     "package.json",
     "smooth-scroll.jquery.json"
+  ],
+  "keywords": [
+    "scroll",
+    "animation"
   ]
 }

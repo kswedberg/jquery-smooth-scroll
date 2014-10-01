@@ -1,5 +1,5 @@
 /*!
- * Smooth Scroll - v1.5.0 - 2014-08-11
+ * jQuery Smooth Scroll - v1.5.0 - 2014-10-01
  * https://github.com/kswedberg/jquery-smooth-scroll
  * Copyright (c) 2014 Karl Swedberg
  * Licensed MIT (https://github.com/kswedberg/jquery-smooth-scroll/blob/master/LICENSE-MIT)
@@ -123,7 +123,7 @@ $.fn.extend({
           include = true,
           clickOpts = {},
           hostMatch = ((location.hostname === link.hostname) || !link.hostname),
-          pathMatch = thisOpts.scrollTarget || ( $.smoothScroll.filterPath(link.pathname) || locationPath ) === locationPath,
+          pathMatch = thisOpts.scrollTarget || ( $.smoothScroll.filterPath(link.pathname) === locationPath ),
           thisHash = escapeSelector(link.hash);
 
       if ( !thisOpts.scrollTarget && (!hostMatch || !pathMatch || !thisHash) ) {

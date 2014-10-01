@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width">
-  <title>jQuery <%= pkg.title %> Plugin</title>
+  <title><%= pkg.title %> Plugin</title>
   <style>
   html,
   body {
