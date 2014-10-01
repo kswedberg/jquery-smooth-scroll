@@ -1,12 +1,12 @@
 /*!
- * jQuery Smooth Scroll - v1.5.0 - 2014-10-01
+ * jQuery Smooth Scroll - v1.5.1 - 2014-10-01
  * https://github.com/kswedberg/jquery-smooth-scroll
  * Copyright (c) 2014 Karl Swedberg
  * Licensed MIT (https://github.com/kswedberg/jquery-smooth-scroll/blob/master/LICENSE-MIT)
  */
 
 (function($) {
-var version = '1.5.0',
+var version = '1.5.1',
     optionOverrides = {},
     defaults = {
       exclude: [],
