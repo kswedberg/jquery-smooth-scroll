@@ -3,8 +3,8 @@
 module.exports = function(grunt) {
 
   var marked = require('marked');
-  // var hl = require('highlight').Highlight;
   var hl = require('node-syntaxhighlighter');
+
   marked.setOptions({
     highlight: function(code, lang) {
       lang = lang || 'javascript';
@@ -39,7 +39,17 @@ module.exports = function(grunt) {
       },
       options: {
         stripBanners: true,
-        banner: '<%= meta.banner %>'
+        banner: '<%= meta.banner %>',
+        process: function(src) {
+          var umdHead = grunt.file.read('lib/tmpl/umdhead.tpl'),
+              umdFoot = grunt.file.read('lib/tmpl/umdfoot.tpl');
+
+          src = src
+          .replace('(function($) {', umdHead)
+          .replace('})(jQuery);', umdFoot);
+
+          return src;
+        }
       }
     },
     uglify: {
@@ -110,32 +120,6 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerMultiTask( 'setshell', 'Set grunt shell commands', function() {
-    var settings, cmd,
-        tgt = this.target,
-        cmdLabel = 'shell.' + tgt + '.command',
-        file = this.data.file,
-        append = this.data.cmdAppend || '';
-
-    if ( !grunt.file.exists(file) ) {
-      grunt.warn('File does not exist: ' + file);
-    }
-
-    settings = grunt.file.readJSON(file);
-    if (!settings[tgt]) {
-      grunt.warn('No ' + tgt + ' property found in ' + file);
-    }
-
-    cmd = settings[tgt] + append;
-    grunt.config(cmdLabel, cmd);
-    grunt.log.writeln( ('Setting ' + cmdLabel + ' to:').cyan );
-
-    grunt.log.writeln(cmd);
-
-  });
-
-  grunt.registerTask( 'deploy', ['setshell:rsync', 'shell:rsync']);
-
   grunt.registerTask( 'configs', 'Update json configs based on package.json', function() {
     var pkg = grunt.file.readJSON('package.json'),
         pkgBasename = grunt.config('pluginName'),
@@ -182,5 +166,4 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-version');
-  grunt.loadNpmTasks('grunt-shell');
 };

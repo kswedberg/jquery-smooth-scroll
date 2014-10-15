@@ -1,5 +1,5 @@
 (function($) {
-  var version = '1.5.2',
+  var version = '1.5.3',
       optionOverrides = {},
       defaults = {
         exclude: [],

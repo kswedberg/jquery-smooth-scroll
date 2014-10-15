@@ -1,6 +1,6 @@
 {
   "name": "jquery.smooth-scroll",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "dependencies": {
     "jquery": ">=1.3"
   },
