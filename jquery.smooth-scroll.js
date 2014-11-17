@@ -1,5 +1,5 @@
 /*!
- * jQuery Smooth Scroll - v1.5.3 - 2014-10-15
+ * jQuery Smooth Scroll - v1.5.4 - 2014-11-17
  * https://github.com/kswedberg/jquery-smooth-scroll
  * Copyright (c) 2014 Karl Swedberg
  * Licensed MIT (https://github.com/kswedberg/jquery-smooth-scroll/blob/master/LICENSE-MIT)
@@ -15,7 +15,7 @@
   }
 }(function ($) {
 
-  var version = '1.5.3',
+  var version = '1.5.4',
       optionOverrides = {},
       defaults = {
         exclude: [],
@@ -262,7 +262,7 @@
   $.fn.smoothScroll.defaults = defaults;
 
   function escapeSelector (str) {
-    return str.replace(/(:|\.)/g,'\\$1');
+    return str.replace(/(:|\.|\/)/g,'\\$1');
   }
 
 }));
