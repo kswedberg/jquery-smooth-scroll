@@ -138,11 +138,16 @@ module.exports = function(grunt) {
     });
 
     jqConfig.keywords.shift();
+
     jqConfig.name = pkgBasename;
-    bower.name = 'jquery.' + pkgBasename;
+    bower.name = 'jquery-' + pkgBasename;
 
     grunt.file.write( bowerFile, JSON.stringify(bower, null, 2) + '\n');
     grunt.log.writeln( 'File "' + bowerFile + '" updated."' );
+
+    while ( /jquery/i.test(jqConfig.keywords[0]) ) {
+      jqConfig.keywords.shift();
+    }
 
     grunt.file.write( jqConfigFile, JSON.stringify(jqConfig, null, 2) + '\n');
     grunt.log.writeln( 'File "' + jqConfigFile + '" updated."' );

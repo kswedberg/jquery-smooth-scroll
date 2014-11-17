@@ -2,6 +2,8 @@
 
 Allows for easy implementation of smooth scrolling for same-page links.
 
+[![NPM](https://nodei.co/npm/jquery-smooth-scroll.png?compact=true)](https://npmjs.org/package/jquery-smooth-scroll)
+
 ## Download
 
 Using npm:
