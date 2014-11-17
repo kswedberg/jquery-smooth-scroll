@@ -15,7 +15,7 @@ npm install jquery-smooth-scroll
 Using bower:
 
 ```bash
-bower install jquery-smooth-scroll
+bower install jquery.smooth-scroll
 ```
 
 The old-fashioned way:
