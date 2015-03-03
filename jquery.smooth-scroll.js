@@ -1,5 +1,5 @@
 /*!
- * jQuery Smooth Scroll - v1.5.5 - 2015-02-19
+ * jQuery Smooth Scroll - v1.5.5 - 2015-03-03
  * https://github.com/kswedberg/jquery-smooth-scroll
  * Copyright (c) 2015 Karl Swedberg
  * Licensed MIT (https://github.com/kswedberg/jquery-smooth-scroll/blob/master/LICENSE-MIT)
@@ -129,9 +129,6 @@
         var link = this,
             $link = $(this),
             thisOpts = $.extend({}, opts, $link.data('ssOpts') || {}),
-            exclude = opts.exclude,
-            excludeWithin = thisOpts.excludeWithin,
-            elCounter = 0, ewlCounter = 0,
             include = true,
             clickOpts = {},
             hostMatch = ((location.hostname === link.hostname) || !link.hostname),
@@ -140,17 +137,6 @@
 
         if ( !thisOpts.scrollTarget && (!hostMatch || !pathMatch || !thisHash) ) {
           include = false;
-        } else {
-          while (include && elCounter < exclude.length) {
-            if ($link.is(escapeSelector(exclude[elCounter++]))) {
-              include = false;
-            }
-          }
-          while ( include && ewlCounter < excludeWithin.length ) {
-            if ($link.closest(excludeWithin[ewlCounter++]).length) {
-              include = false;
-            }
-          }
         }
 
         if ( include ) {
@@ -176,7 +162,9 @@
     if ( options === 'options' && typeof px === 'object' ) {
       return $.extend(optionOverrides, px);
     }
-    var opts, $scroller, scrollTargetOffset, speed, delta,
+    var opts, $scroller, scrollTargetOffset, speed, delta, $target,
+        targetExcluded = false,
+        elCounter = 0, ewlCounter = 0,
         scrollerOffset = 0,
         offPos = 'offset',
         scrollDir = 'scrollTop',
@@ -196,59 +184,73 @@
       }
     }
 
-    scrollDir = opts.direction === 'left' ? 'scrollLeft' : scrollDir;
-
-    if ( opts.scrollElement ) {
-      $scroller = opts.scrollElement;
-      if ( !(/^(?:HTML|BODY)$/).test($scroller[0].nodeName) ) {
-        scrollerOffset = $scroller[scrollDir]();
+    $target = $(opts.scrollTarget);
+    while (!targetExcluded && elCounter < opts.exclude.length) {
+      if ($target.is(escapeSelector(opts.exclude[elCounter++]))) {
+        targetExcluded = true;
       }
-    } else {
-      $scroller = $('html, body').firstScrollable(opts.direction);
+    }
+    while ( !targetExcluded && ewlCounter < opts.excludeWithin.length ) {
+      if ($target.closest(opts.excludeWithin[ewlCounter++]).length) {
+        targetExcluded = true;
+      }
     }
 
-    // beforeScroll callback function must fire before calculating offset
-    opts.beforeScroll.call($scroller, opts);
+    if ( !targetExcluded ) {
+      scrollDir = opts.direction === 'left' ? 'scrollLeft' : scrollDir;
 
-    scrollTargetOffset = (typeof options === 'number') ? options :
-                          px ||
-                          ( $(opts.scrollTarget)[offPos]() &&
-                          $(opts.scrollTarget)[offPos]()[opts.direction] ) ||
-                          0;
-
-    aniProps[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
-    speed = opts.speed;
-
-    // automatically calculate the speed of the scroll based on distance / coefficient
-    if (speed === 'auto') {
-
-      // $scroller.scrollTop() is position before scroll, aniProps[scrollDir] is position after
-      // When delta is greater, speed will be greater.
-      delta = aniProps[scrollDir] - $scroller.scrollTop();
-      if(delta < 0) {
-        delta *= -1;
+      if ( opts.scrollElement ) {
+        $scroller = opts.scrollElement;
+        if ( !(/^(?:HTML|BODY)$/).test($scroller[0].nodeName) ) {
+          scrollerOffset = $scroller[scrollDir]();
+        }
+      } else {
+        $scroller = $('html, body').firstScrollable(opts.direction);
       }
 
-      // Divide the delta by the coefficient
-      speed = delta / opts.autoCoefficient;
-    }
+      // beforeScroll callback function must fire before calculating offset
+      opts.beforeScroll.call($scroller, opts);
 
-    aniOpts = {
-      duration: speed,
-      easing: opts.easing,
-      complete: function() {
+      scrollTargetOffset = (typeof options === 'number') ? options :
+      px ||
+      ( $(opts.scrollTarget)[offPos]() &&
+      $(opts.scrollTarget)[offPos]()[opts.direction] ) ||
+      0;
+
+      aniProps[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
+      speed = opts.speed;
+
+      // automatically calculate the speed of the scroll based on distance / coefficient
+      if (speed === 'auto') {
+
+        // $scroller.scrollTop() is position before scroll, aniProps[scrollDir] is position after
+        // When delta is greater, speed will be greater.
+        delta = aniProps[scrollDir] - $scroller.scrollTop();
+        if(delta < 0) {
+          delta *= -1;
+        }
+
+        // Divide the delta by the coefficient
+        speed = delta / opts.autoCoefficient;
+      }
+
+      aniOpts = {
+        duration: speed,
+        easing: opts.easing,
+        complete: function() {
+          opts.afterScroll.call(opts.link, opts);
+        }
+      };
+
+      if (opts.step) {
+        aniOpts.step = opts.step;
+      }
+
+      if ($scroller.length) {
+        $scroller.stop().animate(aniProps, aniOpts);
+      } else {
         opts.afterScroll.call(opts.link, opts);
       }
-    };
-
-    if (opts.step) {
-      aniOpts.step = opts.step;
-    }
-
-    if ($scroller.length) {
-      $scroller.stop().animate(aniProps, aniOpts);
-    } else {
-      opts.afterScroll.call(opts.link, opts);
     }
   };
 
