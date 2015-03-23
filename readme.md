@@ -23,6 +23,10 @@ The old-fashioned way:
 Go to the following URL in your browser and copy/paste the code into your own file:
 https://raw.githubusercontent.com/kswedberg/jquery-smooth-scroll/master/jquery.smooth-scroll.js
 
+## Demo
+
+You can try a bare-bones demo at [kswedberg.github.io/jquery-smooth-scroll/demo/](https://kswedberg.github.io/jquery-smooth-scroll/demo/)
+
 ## Features
 
 ### $.fn.smoothScroll
