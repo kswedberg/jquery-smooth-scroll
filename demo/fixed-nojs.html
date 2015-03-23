@@ -4,78 +4,68 @@
   <meta charset="utf-8">
   <title>Smooth Scroll jQuery Plugin Demo</title>
   <style type="text/css">
-    body {
-      font-family: "Helvetica Neue", Helvetica, sans-serif;
-    }
-    .container {
-      margin: 40px auto;
-      width: 200px;
-    }
-    h2 {
-      text-align: center;
-    }
-    #nav {
-      position: fixed;
-      margin-left: -200px;
-      width: 140px;
-    }
+ body {
+   font-family: "Helvetica Neue", Helvetica, sans-serif;
+   line-height: 1.4;
+ }
+ .container {
+   margin: 40px auto;
+   width: 200px;
+ }
+ h2 {
+   text-align: center;
+ }
+.mainnav {
+   left: 50%;
+   top: 100px;
+   position: fixed;
+   margin-left: -300px;
+   width: 140px;
+ }
+
   </style>
+
 </head>
 <body>
-  <h2>Smooth Scroll jQuery Plugin with Back Button Support</h2>
-  <div class="container">
-    <ul id="nav">
+  <div id="top" class="container">
+
+    <ul class="mainnav">
       <li><a href="#p1">p1</a></li>
       <li><a href="#p2">p2</a></li>
       <li><a href="#p3">p3</a></li>
       <li><a href="#p4">p4</a></li>
       <li><a href="#p5">p5</a></li>
-      <li><a href="#">#</a></li>
-      <li><a href="#not-here">not-here</a></li>
+      <li><a href="#top">back to top</a></li>
     </ul>
+
+    <h3>In Mobile Safari (iPad/iPhone):</h3>
+    <ol>
+      <li>Click one of the navigation links to the left. *Works*</li>
+      <li>Click another. *Does NOT Work*</li>
+      <li>Scroll the page a little manually by touching and dragging.</li>
+      <li>Click one of the navigation links to the left. *Works*</li>
+      <li>Click another. *Does NOT Work*</li>
+    </ol>
+
+    <h3>Questions:</h3>
+    <ul>
+      <li>What's up with that?</li>
+      <li>Is this a known bug?</li>
+      <li>Are there any workarounds?</li>
+      <li>Am I doing something stupid?</li>
+    </ul>
+
+    <hr>
+
     <p id="p1">p1 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
     <p id="p2">p2 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
     <p id="p3">p3 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
     <p id="p4">p4 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
     <p id="p5">p5 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
     <p id="p6">p6 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-
+    <p class="subnav"><a href="#p1">p1</a> <a href="#p2">p2</a> <a href="#p3">p3</a> <a href="#p4">p4</a></p>
 
   </div>
-  <script src="../lib/jquery/jquery.js"></script>
-  <script src="../src/jquery.smooth-scroll.js"></script>
-  <script src="../lib/jquery.ba-bbq.js"></script>
-  <script>
-    $(document).ready(function() {
-
-      $(document).on('click', 'a[href*="#"]', function() {
-        var slashedHash = '#/' + this.hash.slice(1);
-        if ( this.hash ) {
-
-          if ( slashedHash === location.hash ) {
-            $.smoothScroll({scrollTarget: this.hash});
-          } else {
-            $.bbq.pushState(slashedHash);
-          }
-
-          return false;
-        }
-      });
-
-      $(window).bind('hashchange', function(event) {
-        var tgt = location.hash.replace(/^#\/?/,'');
-        if ( document.getElementById(tgt) ) {
-          $.smoothScroll({scrollTarget: '#' + tgt});
-        }
-      });
-
-      $(window).trigger('hashchange');
-    });
-  </script>
 
 </body>
 </html>

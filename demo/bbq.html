@@ -25,7 +25,9 @@
       <li><a href="#p3">p3</a></li>
       <li><a href="#p4">p4</a></li>
       <li><a href="#p5">p5</a></li>
+      <li><a href="index.html#p5">index.html#p5</a> (goes to new page)</li>
       <li><a href="#">#</a></li>
+
       <li><a href="#not-here">not-here</a></li>
     </ul>
     <p id="p1">p1 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
@@ -41,20 +43,18 @@
     <a href="#nav">back to nav</a>
 
   </div>
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
-  <script>!window.jQuery && document.write(unescape('%3Cscript src="../lib/jquery/jquery.js"%3E%3C/script%3E'));</script>
+  <script src="../lib/jquery/jquery.js"></script>
   <script src="../src/jquery.smooth-scroll.js"></script>
   <script src="../lib/jquery.ba-bbq.js"></script>
   <script>
-    $(document).ready(function() {
-
-      $('a[href*="#"]').live('click', function() {
-        if ( this.hash ) {
-          $.bbq.pushState( '#/' + this.hash.slice(1) );
-          return false;
-        }
-      });
-
+    $(document)
+    .on('click', 'a[href*="#"]', function() {
+      if ( this.hash && this.pathname === location.pathname ) {
+        $.bbq.pushState( '#/' + this.hash.slice(1) );
+        return false;
+      }
+    })
+    .ready(function() {
       $(window).bind('hashchange', function(event) {
         var tgt = location.hash.replace(/^#\/?/,'');
         if ( document.getElementById(tgt) ) {

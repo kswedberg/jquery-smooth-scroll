@@ -1,0 +1,21 @@
+{
+  "name": "jquery-smooth-scroll",
+  "version": "1.5.5",
+  "dependencies": {
+    "jquery": ">=1.3"
+  },
+  "main": "jquery.smooth-scroll.js",
+  "ignore": [
+    "demo/",
+    "lib/",
+    "src/",
+    "Gruntfile.js",
+    "package.json",
+    "smooth-scroll.jquery.json"
+  ],
+  "keywords": [
+    "jquery-plugin",
+    "scroll",
+    "animation"
+  ]
+}

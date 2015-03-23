@@ -1,4 +1,23 @@
-(function($) {
+/*!
+ * jQuery Smooth Scroll - v1.5.5 - 2015-02-19
+ * https://github.com/kswedberg/jquery-smooth-scroll
+ * Copyright (c) 2015 Karl Swedberg
+ * Licensed MIT (https://github.com/kswedberg/jquery-smooth-scroll/blob/master/LICENSE-MIT)
+ */
+
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // CommonJS
+    factory(require('jquery'));
+  } else {
+    // Browser globals
+    factory(jQuery);
+  }
+}(function ($) {
+
   var version = '1.5.5',
       optionOverrides = {},
       defaults = {
@@ -249,4 +268,5 @@
     return str.replace(/(:|\.|\/)/g,'\\$1');
   }
 
-})(jQuery);
+}));
+
