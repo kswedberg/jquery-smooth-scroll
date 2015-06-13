@@ -99,7 +99,6 @@ module.exports = function(grunt) {
         src: [
           'package.json',
           '<%= pluginName %>.jquery.json',
-          'bower.json',
           'src/jquery.<%= pluginName %>.js',
           'jquery.<%= pluginName %>.js'
         ],
