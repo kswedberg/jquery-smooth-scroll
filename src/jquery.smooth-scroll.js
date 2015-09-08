@@ -1,5 +1,5 @@
 (function($) {
-  var version = '1.5.5',
+  var version = '1.5.6',
       optionOverrides = {},
       defaults = {
         exclude: [],
@@ -39,9 +39,18 @@
             dir = opts.dir && opts.dir === 'left' ? 'scrollLeft' : 'scrollTop';
 
         this.each(function() {
-
-          if (this === document || this === window) { return; }
           var el = $(this);
+
+          if (this === document || this === window) {
+            return;
+          }
+
+          if ( document.scrollingElement && (this === document.documentElement || this === document.body) ) {
+            scrollable.push(document.scrollingElement);
+
+            return false;
+          }
+
           if ( el[dir]() > 0 ) {
             scrollable.push(this);
           } else {
