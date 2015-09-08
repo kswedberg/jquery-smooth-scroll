@@ -123,33 +123,16 @@ module.exports = function(grunt) {
     var pkg = grunt.file.readJSON('package.json'),
         pkgBasename = grunt.config('pluginName'),
         bowerFile = grunt.config('bower'),
-        bower = grunt.file.readJSON(bowerFile),
-        jqConfigFile = pkgBasename + '.jquery.json',
-        jqConfig = grunt.file.readJSON(jqConfigFile);
+        bower = grunt.file.readJSON(bowerFile);
 
-    ['main', 'version', 'dependencies', 'keywords'].forEach(function(el) {
+    ['main', 'dependencies', 'keywords'].forEach(function(el) {
       bower[el] = pkg[el];
-      jqConfig[el] = pkg[el];
     });
 
-    ['author', 'repository', 'homepage', 'docs', 'bugs', 'demo', 'licenses'].forEach(function(el) {
-      jqConfig[el] = pkg[el];
-    });
-
-    jqConfig.keywords.shift();
-
-    jqConfig.name = pkgBasename;
     bower.name = 'jquery-' + pkgBasename;
 
     grunt.file.write( bowerFile, JSON.stringify(bower, null, 2) + '\n');
     grunt.log.writeln( 'File "' + bowerFile + '" updated."' );
-
-    while ( /jquery/i.test(jqConfig.keywords[0]) ) {
-      jqConfig.keywords.shift();
-    }
-
-    grunt.file.write( jqConfigFile, JSON.stringify(jqConfig, null, 2) + '\n');
-    grunt.log.writeln( 'File "' + jqConfigFile + '" updated."' );
   });
 
   grunt.registerTask('docs', 'Convert readme.md to html and concat with header and footer for index.html', function() {
