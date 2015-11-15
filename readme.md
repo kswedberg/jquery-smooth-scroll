@@ -12,12 +12,6 @@ Using npm:
 npm install jquery-smooth-scroll
 ```
 
-Using bower:
-
-```bash
-bower install jquery-smooth-scroll
-```
-
 The old-fashioned way:
 
 Go to the following URL in your browser and copy/paste the code into your own file:

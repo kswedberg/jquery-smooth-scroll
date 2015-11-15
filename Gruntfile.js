@@ -18,7 +18,6 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pluginName: 'smooth-scroll',
-    bower: './bower.json',
     pkg: grunt.file.readJSON('package.json'),
     meta: {
       banner: '/*!<%= "\\n" %>' +
@@ -32,7 +31,7 @@ module.exports = function(grunt) {
           '<%= "\\n" %>' + ' */' +
           '<%= "\\n\\n" %>'
     },
-		concat: {
+    concat: {
       all: {
         src: ['src/jquery.<%= pluginName %>.js'],
         dest: 'jquery.<%= pluginName %>.js'
@@ -41,8 +40,8 @@ module.exports = function(grunt) {
         stripBanners: true,
         banner: '<%= meta.banner %>',
         process: function(src) {
-          var umdHead = grunt.file.read('lib/tmpl/umdhead.tpl'),
-              umdFoot = grunt.file.read('lib/tmpl/umdfoot.tpl');
+          var umdHead = grunt.file.read('lib/tmpl/umdhead.tpl');
+          var umdFoot = grunt.file.read('lib/tmpl/umdfoot.tpl');
 
           src = src
           .replace('(function($) {', umdHead)
@@ -119,33 +118,17 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask( 'configs', 'Update json configs based on package.json', function() {
-    var pkg = grunt.file.readJSON('package.json'),
-        pkgBasename = grunt.config('pluginName'),
-        bowerFile = grunt.config('bower'),
-        bower = grunt.file.readJSON(bowerFile);
-
-    ['main', 'dependencies', 'keywords'].forEach(function(el) {
-      bower[el] = pkg[el];
-    });
-
-    bower.name = 'jquery-' + pkgBasename;
-
-    grunt.file.write( bowerFile, JSON.stringify(bower, null, 2) + '\n');
-    grunt.log.writeln( 'File "' + bowerFile + '" updated."' );
-  });
-
   grunt.registerTask('docs', 'Convert readme.md to html and concat with header and footer for index.html', function() {
-    var readme = grunt.file.read('readme.md'),
-        head = grunt.template.process( grunt.file.read('lib/tmpl/header.tpl') ),
-        foot = grunt.file.read('lib/tmpl/footer.tpl'),
-        doc = marked(readme);
+    var readme = grunt.file.read('readme.md');
+    var head = grunt.template.process(grunt.file.read('lib/tmpl/header.tpl'));
+    var foot = grunt.file.read('lib/tmpl/footer.tpl');
+    var doc = marked(readme);
 
     grunt.file.write('index.html', head + doc + foot);
   });
 
-  grunt.registerTask('build', ['jshint', 'concat', 'version:same', 'configs', 'uglify', 'docs']);
-  grunt.registerTask('patch', ['jshint', 'concat', 'version:bannerPatch', 'version:patch', 'configs', 'uglify']);
+  grunt.registerTask('build', ['jshint', 'concat', 'version:same', 'uglify', 'docs']);
+  grunt.registerTask('patch', ['jshint', 'concat', 'version:bannerPatch', 'version:patch', 'uglify']);
   grunt.registerTask('default', ['build']);
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
