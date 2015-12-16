@@ -212,12 +212,9 @@
     // automatically calculate the speed of the scroll based on distance / coefficient
     if (speed === 'auto') {
 
-      // $scroller.scrollTop() is position before scroll, aniProps[scrollDir] is position after
+      // $scroller[scrollDir]() is position before scroll, aniProps[scrollDir] is position after
       // When delta is greater, speed will be greater.
-      delta = aniProps[scrollDir] - $scroller.scrollTop();
-      if(delta < 0) {
-        delta *= -1;
-      }
+      delta = Math.abs(aniProps[scrollDir] - $scroller[scrollDir]());
 
       // Divide the delta by the coefficient
       speed = delta / opts.autoCoefficient;
