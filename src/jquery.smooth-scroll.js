@@ -9,6 +9,10 @@
         // one of 'top' or 'left'
         direction: 'top',
 
+        // if set, bind click events through delegation
+        //  supported since jQuery 1.4.2
+        delegateSelector: null,
+
         // jQuery set of elements you wish to scroll (for $.smoothScroll).
         //  if null (default), $('html, body').firstScrollable() is used.
         scrollElement: null,
@@ -113,9 +117,7 @@
       var opts = $.extend({}, $.fn.smoothScroll.defaults, options),
           locationPath = $.smoothScroll.filterPath(location.pathname);
 
-      this
-      .unbind('click.smoothscroll')
-      .bind('click.smoothscroll', function(event) {
+      var clickHandler = function(event) {
         var link = this,
             $link = $(this),
             thisOpts = $.extend({}, opts, $link.data('ssOpts') || {}),
@@ -156,7 +158,17 @@
 
           $.smoothScroll( clickOpts );
         }
-      });
+      };
+
+      if(options.delegateSelector !== null){
+        this
+          .undelegate(options.delegateSelector, 'click.smoothscroll')
+          .delegate(options.delegateSelector, 'click.smoothscroll', clickHandler);
+      }else{
+        this
+          .unbind('click.smoothscroll')
+          .bind('click.smoothscroll', clickHandler);
+      }
 
       return this;
     }
