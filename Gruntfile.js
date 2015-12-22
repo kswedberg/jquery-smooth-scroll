@@ -26,8 +26,7 @@ module.exports = function(grunt) {
           '<%= pkg.homepage ? " * " + pkg.homepage + "\\n" : "" %>' +
           ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>' +
           '<%= "\\n" %>' +
-          ' * Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %>' +
-          ' (<%= _.pluck(pkg.licenses, "url").join(", ") %>)' +
+          ' * Licensed <%= pkg.license %>' +
           '<%= "\\n" %>' + ' */' +
           '<%= "\\n\\n" %>'
     },
@@ -97,7 +96,6 @@ module.exports = function(grunt) {
       patch: {
         src: [
           'package.json',
-          '<%= pluginName %>.jquery.json',
           'src/jquery.<%= pluginName %>.js',
           'jquery.<%= pluginName %>.js'
         ],

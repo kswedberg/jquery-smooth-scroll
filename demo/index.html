@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <title>Smooth Scroll jQuery Plugin Demo</title>
   <style type="text/css">
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+    }
     .container {
       margin: 40px auto;
       width: 200px;
@@ -30,7 +33,9 @@
   <script>
     $(document).ready(function() {
 
-      $('ul.mainnav a').smoothScroll();
+      $('body').smoothScroll({
+        delegateSelector: 'ul.mainnav a'
+      });
 
       $('p.subnav a').click(function(event) {
         event.preventDefault();

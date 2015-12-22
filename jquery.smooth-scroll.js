@@ -1,8 +1,8 @@
 /*!
- * jQuery Smooth Scroll - v1.5.7 - 2015-12-16
+ * jQuery Smooth Scroll - v1.6.0 - 2015-12-22
  * https://github.com/kswedberg/jquery-smooth-scroll
  * Copyright (c) 2015 Karl Swedberg
- * Licensed MIT (https://github.com/kswedberg/jquery-smooth-scroll/blob/master/LICENSE-MIT)
+ * Licensed MIT
  */
 
 (function (factory) {
@@ -18,15 +18,19 @@
   }
 }(function ($) {
 
-  var version = '1.5.7',
+  var version = '1.6.0',
       optionOverrides = {},
       defaults = {
         exclude: [],
-        excludeWithin:[],
+        excludeWithin: [],
         offset: 0,
 
         // one of 'top' or 'left'
         direction: 'top',
+
+        // if set, bind click events through delegation
+        //  supported since jQuery 1.4.2
+        delegateSelector: null,
 
         // jQuery set of elements you wish to scroll (for $.smoothScroll).
         //  if null (default), $('html, body').firstScrollable() is used.
@@ -132,9 +136,7 @@
       var opts = $.extend({}, $.fn.smoothScroll.defaults, options),
           locationPath = $.smoothScroll.filterPath(location.pathname);
 
-      this
-      .unbind('click.smoothscroll')
-      .bind('click.smoothscroll', function(event) {
+      var clickHandler = function(event) {
         var link = this,
             $link = $(this),
             thisOpts = $.extend({}, opts, $link.data('ssOpts') || {}),
@@ -175,7 +177,17 @@
 
           $.smoothScroll( clickOpts );
         }
-      });
+      };
+
+      if (options.delegateSelector !== null) {
+        this
+          .undelegate(options.delegateSelector, 'click.smoothscroll')
+          .delegate(options.delegateSelector, 'click.smoothscroll', clickHandler);
+      } else {
+        this
+          .unbind('click.smoothscroll')
+          .bind('click.smoothscroll', clickHandler);
+      }
 
       return this;
     }

@@ -49,6 +49,9 @@ The following options, shown with their default values, are available for both `
   // only use if you want to override default behavior
   scrollTarget: null,
 
+  // string to use as selector for event delegation (Requires jQuery >=1.4.2)
+  delegateSelector: null,
+
   // fn(opts) function to be called before scrolling occurs.
   // `this` is the element(s) being scrolled
   beforeScroll: function() {},
