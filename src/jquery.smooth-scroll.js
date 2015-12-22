@@ -160,11 +160,11 @@
         }
       };
 
-      if(options.delegateSelector !== null){
+      if (options.delegateSelector !== null) {
         this
           .undelegate(options.delegateSelector, 'click.smoothscroll')
           .delegate(options.delegateSelector, 'click.smoothscroll', clickHandler);
-      }else{
+      } else {
         this
           .unbind('click.smoothscroll')
           .bind('click.smoothscroll', clickHandler);
