@@ -114,8 +114,7 @@
         });
       }
 
-      var opts = $.extend({}, $.fn.smoothScroll.defaults, options),
-          locationPath = $.smoothScroll.filterPath(location.pathname);
+      var opts = $.extend({}, $.fn.smoothScroll.defaults, options);
 
       var clickHandler = function(event) {
         var link = this,
@@ -126,8 +125,10 @@
             elCounter = 0, ewlCounter = 0,
             include = true,
             clickOpts = {},
+            locationPath = $.smoothScroll.filterPath(location.pathname),
+            linkPath = $.smoothScroll.filterPath(link.pathname),
             hostMatch = ((location.hostname === link.hostname) || !link.hostname),
-            pathMatch = thisOpts.scrollTarget || ( $.smoothScroll.filterPath(link.pathname) === locationPath ),
+            pathMatch = thisOpts.scrollTarget || ( linkPath === locationPath ),
             thisHash = escapeSelector(link.hash);
 
         if ( !thisOpts.scrollTarget && (!hostMatch || !pathMatch || !thisHash) ) {
