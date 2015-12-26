@@ -93,26 +93,21 @@ module.exports = function(grunt) {
       }
     },
     version: {
-      patch: {
+
+      files: {
         src: [
           'package.json',
           'src/jquery.<%= pluginName %>.js',
           'jquery.<%= pluginName %>.js'
-        ],
-        options: {
-          release: 'patch'
-        }
+        ]
       },
-      same: {
-        src: ['package.json', 'src/jquery.<%= pluginName %>.js', 'jquery.<%= pluginName %>.js']
-      },
-      bannerPatch: {
+      banner: {
         src: ['jquery.<%= pluginName %>.js'],
         options: {
-          prefix: '- v',
-          release: 'patch'
+          prefix: '- v'
         }
-      }
+      },
+
     }
   });
 
@@ -125,8 +120,8 @@ module.exports = function(grunt) {
     grunt.file.write('index.html', head + doc + foot);
   });
 
-  grunt.registerTask('build', ['jshint', 'concat', 'version:same', 'uglify', 'docs']);
-  grunt.registerTask('patch', ['jshint', 'concat', 'version:bannerPatch', 'version:patch', 'uglify']);
+  grunt.registerTask('build', ['jshint', 'concat', 'version', 'uglify', 'docs']);
+  grunt.registerTask('patch', ['jshint', 'concat', 'version::patch', 'uglify']);
   grunt.registerTask('default', ['build']);
 
   grunt.loadNpmTasks('grunt-contrib-jshint');

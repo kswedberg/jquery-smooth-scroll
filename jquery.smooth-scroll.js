@@ -1,5 +1,5 @@
 /*!
- * jQuery Smooth Scroll - v1.6.0 - 2015-12-22
+ * jQuery Smooth Scroll - v1.6.1 - 2015-12-26
  * https://github.com/kswedberg/jquery-smooth-scroll
  * Copyright (c) 2015 Karl Swedberg
  * Licensed MIT
@@ -18,7 +18,7 @@
   }
 }(function ($) {
 
-  var version = '1.6.0',
+  var version = '1.6.1',
       optionOverrides = {},
       defaults = {
         exclude: [],
@@ -133,8 +133,7 @@
         });
       }
 
-      var opts = $.extend({}, $.fn.smoothScroll.defaults, options),
-          locationPath = $.smoothScroll.filterPath(location.pathname);
+      var opts = $.extend({}, $.fn.smoothScroll.defaults, options);
 
       var clickHandler = function(event) {
         var link = this,
@@ -145,8 +144,10 @@
             elCounter = 0, ewlCounter = 0,
             include = true,
             clickOpts = {},
+            locationPath = $.smoothScroll.filterPath(location.pathname),
+            linkPath = $.smoothScroll.filterPath(link.pathname),
             hostMatch = ((location.hostname === link.hostname) || !link.hostname),
-            pathMatch = thisOpts.scrollTarget || ( $.smoothScroll.filterPath(link.pathname) === locationPath ),
+            pathMatch = thisOpts.scrollTarget || ( linkPath === locationPath ),
             thisHash = escapeSelector(link.hash);
 
         if ( !thisOpts.scrollTarget && (!hostMatch || !pathMatch || !thisHash) ) {
