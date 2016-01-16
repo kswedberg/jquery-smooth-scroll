@@ -92,6 +92,14 @@ module.exports = function(grunt) {
         }
       }
     },
+    jscs: {
+      src: 'src/**/*.js',
+      options: {
+        config: '.jscsrc',
+        fix: true,
+        verbose: true
+      }
+    },
     version: {
 
       files: {
@@ -120,10 +128,12 @@ module.exports = function(grunt) {
     grunt.file.write('index.html', head + doc + foot);
   });
 
-  grunt.registerTask('build', ['jshint', 'concat', 'version', 'uglify', 'docs']);
-  grunt.registerTask('patch', ['jshint', 'concat', 'version::patch', 'uglify']);
+  grunt.registerTask('lint', ['jshint', 'jscs']);
+  grunt.registerTask('build', ['lint', 'concat', 'version', 'uglify', 'docs']);
+  grunt.registerTask('patch', ['lint', 'concat', 'version::patch', 'uglify']);
   grunt.registerTask('default', ['build']);
 
+  grunt.loadNpmTasks('grunt-jscs');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
