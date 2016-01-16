@@ -1,7 +1,7 @@
 /*!
- * jQuery Smooth Scroll - v1.6.1 - 2015-12-26
+ * jQuery Smooth Scroll - v1.6.2 - 2016-01-16
  * https://github.com/kswedberg/jquery-smooth-scroll
- * Copyright (c) 2015 Karl Swedberg
+ * Copyright (c) 2016 Karl Swedberg
  * Licensed MIT
  */
 
@@ -18,7 +18,7 @@
   }
 }(function($) {
 
-  var version = '1.6.1';
+  var version = '1.6.2';
   var optionOverrides = {};
   var defaults = {
     exclude: [],
@@ -89,13 +89,21 @@
       }
     });
 
-    // If no scrollable elements, fall back to <body>,
-    // if it's in the jQuery collection
-    // (doing this because Safari sets scrollTop async,
-    // so can't set it to 1 and immediately get the value.)
     if (!scrollable.length) {
       this.each(function() {
-        if (this.nodeName === 'BODY') {
+        // If no scrollable elements and <html> has scroll-behavior:smooth because
+        // "When this property is specified on the root element, it applies to the viewport instead."
+        // and "The scroll-behavior property of the … body element is *not* propagated to the viewport."
+        // → https://drafts.csswg.org/cssom-view/#propdef-scroll-behavior
+        if (this === document.documentElement && $(this).css('scrollBehavior') === 'smooth') {
+          scrollable = [this];
+        }
+
+        // If still no scrollable elements, fall back to <body>,
+        // if it's in the jQuery collection
+        // (doing this because Safari sets scrollTop async,
+        // so can't set it to 1 and immediately get the value.)
+        if (!scrollable.length && this.nodeName === 'BODY') {
           scrollable = [this];
         }
       });
@@ -297,3 +305,4 @@
   $.fn.smoothScroll.defaults = defaults;
 
 }));
+
