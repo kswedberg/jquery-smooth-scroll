@@ -75,6 +75,7 @@ module.exports = function(grunt) {
       all: ['Gruntfile.js', 'src/**/*.js'],
       options: {
         curly: true,
+        devel: true,
         eqeqeq: true,
         unused: true,
         immed: true,
