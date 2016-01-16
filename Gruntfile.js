@@ -56,7 +56,8 @@ module.exports = function(grunt) {
           'jquery.<%= pluginName %>.min.js': ['<%= concat.all.dest %>']
         },
         options: {
-          preserveComments: 'some'
+          banner: '<%= meta.banner %>',
+          // preserveComments: /\/\*[\s\S]*/
         }
       }
     },
