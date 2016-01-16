@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <title>Smooth Scroll jQuery Plugin Demo</title>
   <style type="text/css">
+    html {
+      scroll-behavior: smooth;
+    }
     body {
       font-family: Helvetica, Arial, sans-serif;
     }
@@ -45,29 +48,28 @@
         });
       });
 
-      $('#change-speed').bind('click', function() {
-        var $p1 = $('ul.mainnav a').first();
-        var p1Opts = $p1.smoothScroll('options') || {};
+      $('#change-speed').on('click', function() {
+        var $p1 = $('ul.mainnav a').first(),
+            p1Opts = $p1.smoothScroll('options') || {};
 
         p1Opts.speed = p1Opts.speed === 1400 ? 400 : 1400;
         $p1.smoothScroll('options', p1Opts);
       });
 
-      $('button.scrollsomething').bind('click', function(event) {
-        event.preventDefault();
+      $('button.scrollsomething').click(function() {
         $.smoothScroll({
           scrollElement: $('div.scrollme'),
           scrollTarget: '#findme'
         });
+        return false;
       });
-      $('button.scrollhorz').bind('click', function(event) {
-        event.preventDefault();
+      $('button.scrollhorz').click(function() {
         $.smoothScroll({
           direction: 'left',
           scrollElement: $('div.scrollme'),
           scrollTarget: '.horiz'
         });
-
+        return false;
       });
 
     });
@@ -85,8 +87,7 @@
       <li><a href="#p5">p5</a></li>
       <li><a href="bbq.html#p5">bbq.html#p5</a></li>
     </ul>
-    <p><a href="bbq.html">Try it with jQuery BBQ hashchange support</a></p>
-    <p>Or, <a href="hashchange.html">native hashchange support (IE9+)</a></p>
+    <p>Or, <a href="bbq.html">try it with hashchange support</a></p>
     <p>Toggle scrolling speed for the p1 link <button id="change-speed">Change speed option</button></p>
     <button class="scrollsomething">Scroll vertically</button>
     <button class="scrollhorz">Scroll horizontally</button>

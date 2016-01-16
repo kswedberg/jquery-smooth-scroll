@@ -1,11 +1,11 @@
 /*!
- * jQuery Smooth Scroll - v1.5.5 - 2015-02-19
+ * jQuery Smooth Scroll - v1.6.2 - 2016-01-16
  * https://github.com/kswedberg/jquery-smooth-scroll
- * Copyright (c) 2015 Karl Swedberg
- * Licensed MIT (https://github.com/kswedberg/jquery-smooth-scroll/blob/master/LICENSE-MIT)
+ * Copyright (c) 2016 Karl Swedberg
+ * Licensed MIT
  */
 
-(function (factory) {
+(function(factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
     define(['jquery'], factory);
@@ -16,129 +16,158 @@
     // Browser globals
     factory(jQuery);
   }
-}(function ($) {
+}(function($) {
 
-  var version = '1.5.5',
-      optionOverrides = {},
-      defaults = {
-        exclude: [],
-        excludeWithin:[],
-        offset: 0,
+  var version = '1.6.2';
+  var optionOverrides = {};
+  var defaults = {
+    exclude: [],
+    excludeWithin: [],
+    offset: 0,
 
-        // one of 'top' or 'left'
-        direction: 'top',
+    // one of 'top' or 'left'
+    direction: 'top',
 
-        // jQuery set of elements you wish to scroll (for $.smoothScroll).
-        //  if null (default), $('html, body').firstScrollable() is used.
-        scrollElement: null,
+    // if set, bind click events through delegation
+    //  supported since jQuery 1.4.2
+    delegateSelector: null,
 
-        // only use if you want to override default behavior
-        scrollTarget: null,
+    // jQuery set of elements you wish to scroll (for $.smoothScroll).
+    //  if null (default), $('html, body').firstScrollable() is used.
+    scrollElement: null,
 
-        // fn(opts) function to be called before scrolling occurs.
-        // `this` is the element(s) being scrolled
-        beforeScroll: function() {},
+    // only use if you want to override default behavior
+    scrollTarget: null,
 
-        // fn(opts) function to be called after scrolling occurs.
-        // `this` is the triggering element
-        afterScroll: function() {},
-        easing: 'swing',
-        speed: 400,
+    // fn(opts) function to be called before scrolling occurs.
+    // `this` is the element(s) being scrolled
+    beforeScroll: function() {},
 
-        // coefficient for "auto" speed
-        autoCoefficient: 2,
+    // fn(opts) function to be called after scrolling occurs.
+    // `this` is the triggering element
+    afterScroll: function() {},
+    easing: 'swing',
+    speed: 400,
 
-        // $.fn.smoothScroll only: whether to prevent the default click action
-        preventDefault: true
-      },
+    // coefficient for "auto" speed
+    autoCoefficient: 2,
 
-      getScrollable = function(opts) {
-        var scrollable = [],
-            scrolled = false,
-            dir = opts.dir && opts.dir === 'left' ? 'scrollLeft' : 'scrollTop';
+    // $.fn.smoothScroll only: whether to prevent the default click action
+    preventDefault: true
+  };
 
-        this.each(function() {
+  var getScrollable = function(opts) {
+    var scrollable = [];
+    var scrolled = false;
+    var dir = opts.dir && opts.dir === 'left' ? 'scrollLeft' : 'scrollTop';
 
-          if (this === document || this === window) { return; }
-          var el = $(this);
-          if ( el[dir]() > 0 ) {
-            scrollable.push(this);
-          } else {
-            // if scroll(Top|Left) === 0, nudge the element 1px and see if it moves
-            el[dir](1);
-            scrolled = el[dir]() > 0;
-            if ( scrolled ) {
-              scrollable.push(this);
-            }
-            // then put it back, of course
-            el[dir](0);
-          }
-        });
+    this.each(function() {
+      var el = $(this);
 
-        // If no scrollable elements, fall back to <body>,
+      if (this === document || this === window) {
+        return;
+      }
+
+      if (document.scrollingElement && (this === document.documentElement || this === document.body)) {
+        scrollable.push(document.scrollingElement);
+
+        return false;
+      }
+
+      if (el[dir]() > 0) {
+        scrollable.push(this);
+      } else {
+        // if scroll(Top|Left) === 0, nudge the element 1px and see if it moves
+        el[dir](1);
+        scrolled = el[dir]() > 0;
+
+        if (scrolled) {
+          scrollable.push(this);
+        }
+        // then put it back, of course
+        el[dir](0);
+      }
+    });
+
+    if (!scrollable.length) {
+      this.each(function() {
+        // If no scrollable elements and <html> has scroll-behavior:smooth because
+        // "When this property is specified on the root element, it applies to the viewport instead."
+        // and "The scroll-behavior property of the … body element is *not* propagated to the viewport."
+        // → https://drafts.csswg.org/cssom-view/#propdef-scroll-behavior
+        if (this === document.documentElement && $(this).css('scrollBehavior') === 'smooth') {
+          scrollable = [this];
+        }
+
+        // If still no scrollable elements, fall back to <body>,
         // if it's in the jQuery collection
         // (doing this because Safari sets scrollTop async,
         // so can't set it to 1 and immediately get the value.)
-        if (!scrollable.length) {
-          this.each(function() {
-            if (this.nodeName === 'BODY') {
-              scrollable = [this];
-            }
-          });
+        if (!scrollable.length && this.nodeName === 'BODY') {
+          scrollable = [this];
         }
+      });
+    }
 
-        // Use the first scrollable element if we're calling firstScrollable()
-        if ( opts.el === 'first' && scrollable.length > 1 ) {
-          scrollable = [ scrollable[0] ];
-        }
+    // Use the first scrollable element if we're calling firstScrollable()
+    if (opts.el === 'first' && scrollable.length > 1) {
+      scrollable = [scrollable[0]];
+    }
 
-        return scrollable;
-      };
+    return scrollable;
+  };
 
   $.fn.extend({
     scrollable: function(dir) {
       var scrl = getScrollable.call(this, {dir: dir});
+
       return this.pushStack(scrl);
     },
     firstScrollable: function(dir) {
       var scrl = getScrollable.call(this, {el: 'first', dir: dir});
+
       return this.pushStack(scrl);
     },
 
     smoothScroll: function(options, extra) {
       options = options || {};
 
-      if ( options === 'options' ) {
-        if ( !extra ) {
+      if (options === 'options') {
+        if (!extra) {
           return this.first().data('ssOpts');
         }
+
         return this.each(function() {
-          var $this = $(this),
-              opts = $.extend($this.data('ssOpts') || {}, extra);
+          var $this = $(this);
+          var opts = $.extend($this.data('ssOpts') || {}, extra);
 
           $(this).data('ssOpts', opts);
         });
       }
 
-      var opts = $.extend({}, $.fn.smoothScroll.defaults, options),
-          locationPath = $.smoothScroll.filterPath(location.pathname);
+      var opts = $.extend({}, $.fn.smoothScroll.defaults, options);
 
-      this
-      .unbind('click.smoothscroll')
-      .bind('click.smoothscroll', function(event) {
-        var link = this,
-            $link = $(this),
-            thisOpts = $.extend({}, opts, $link.data('ssOpts') || {}),
-            exclude = opts.exclude,
-            excludeWithin = thisOpts.excludeWithin,
-            elCounter = 0, ewlCounter = 0,
-            include = true,
-            clickOpts = {},
-            hostMatch = ((location.hostname === link.hostname) || !link.hostname),
-            pathMatch = thisOpts.scrollTarget || ( $.smoothScroll.filterPath(link.pathname) === locationPath ),
-            thisHash = escapeSelector(link.hash);
+      var clickHandler = function(event) {
+        var escapeSelector = function(str) {
+          return str.replace(/(:|\.|\/)/g, '\\$1');
+        };
 
-        if ( !thisOpts.scrollTarget && (!hostMatch || !pathMatch || !thisHash) ) {
+        var link = this;
+        var $link = $(this);
+        var thisOpts = $.extend({}, opts, $link.data('ssOpts') || {});
+        var exclude = opts.exclude;
+        var excludeWithin = thisOpts.excludeWithin;
+        var elCounter = 0;
+        var ewlCounter = 0;
+        var include = true;
+        var clickOpts = {};
+        var locationPath = $.smoothScroll.filterPath(location.pathname);
+        var linkPath = $.smoothScroll.filterPath(link.pathname);
+        var hostMatch = location.hostname === link.hostname || !link.hostname;
+        var pathMatch = thisOpts.scrollTarget || (linkPath === locationPath);
+        var thisHash = escapeSelector(link.hash);
+
+        if (!thisOpts.scrollTarget && (!hostMatch || !pathMatch || !thisHash)) {
           include = false;
         } else {
           while (include && elCounter < exclude.length) {
@@ -146,50 +175,62 @@
               include = false;
             }
           }
-          while ( include && ewlCounter < excludeWithin.length ) {
+
+          while (include && ewlCounter < excludeWithin.length) {
             if ($link.closest(excludeWithin[ewlCounter++]).length) {
               include = false;
             }
           }
         }
 
-        if ( include ) {
-
-          if ( thisOpts.preventDefault ) {
+        if (include) {
+          if (thisOpts.preventDefault) {
             event.preventDefault();
           }
 
-          $.extend( clickOpts, thisOpts, {
+          $.extend(clickOpts, thisOpts, {
             scrollTarget: thisOpts.scrollTarget || thisHash,
             link: link
           });
 
-          $.smoothScroll( clickOpts );
+          $.smoothScroll(clickOpts);
         }
-      });
+      };
+
+      if (options.delegateSelector !== null) {
+        this
+        .undelegate(options.delegateSelector, 'click.smoothscroll')
+        .delegate(options.delegateSelector, 'click.smoothscroll', clickHandler);
+      } else {
+        this
+        .unbind('click.smoothscroll')
+        .bind('click.smoothscroll', clickHandler);
+      }
 
       return this;
     }
   });
 
   $.smoothScroll = function(options, px) {
-    if ( options === 'options' && typeof px === 'object' ) {
+    if (options === 'options' && typeof px === 'object') {
       return $.extend(optionOverrides, px);
     }
-    var opts, $scroller, scrollTargetOffset, speed, delta,
-        scrollerOffset = 0,
-        offPos = 'offset',
-        scrollDir = 'scrollTop',
-        aniProps = {},
-        aniOpts = {};
+    var opts, $scroller, scrollTargetOffset, speed, delta;
+    var scrollerOffset = 0;
+    var offPos = 'offset';
+    var scrollDir = 'scrollTop';
+    var aniProps = {};
+    var aniOpts = {};
 
     if (typeof options === 'number') {
       opts = $.extend({link: null}, $.fn.smoothScroll.defaults, optionOverrides);
       scrollTargetOffset = options;
     } else {
       opts = $.extend({link: null}, $.fn.smoothScroll.defaults, options || {}, optionOverrides);
+
       if (opts.scrollElement) {
         offPos = 'position';
+
         if (opts.scrollElement.css('position') === 'static') {
           opts.scrollElement.css('position', 'relative');
         }
@@ -198,9 +239,10 @@
 
     scrollDir = opts.direction === 'left' ? 'scrollLeft' : scrollDir;
 
-    if ( opts.scrollElement ) {
+    if (opts.scrollElement) {
       $scroller = opts.scrollElement;
-      if ( !(/^(?:HTML|BODY)$/).test($scroller[0].nodeName) ) {
+
+      if (!(/^(?:HTML|BODY)$/).test($scroller[0].nodeName)) {
         scrollerOffset = $scroller[scrollDir]();
       }
     } else {
@@ -212,8 +254,8 @@
 
     scrollTargetOffset = (typeof options === 'number') ? options :
                           px ||
-                          ( $(opts.scrollTarget)[offPos]() &&
-                          $(opts.scrollTarget)[offPos]()[opts.direction] ) ||
+                          ($(opts.scrollTarget)[offPos]() &&
+                          $(opts.scrollTarget)[offPos]()[opts.direction]) ||
                           0;
 
     aniProps[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
@@ -222,12 +264,9 @@
     // automatically calculate the speed of the scroll based on distance / coefficient
     if (speed === 'auto') {
 
-      // $scroller.scrollTop() is position before scroll, aniProps[scrollDir] is position after
+      // $scroller[scrollDir]() is position before scroll, aniProps[scrollDir] is position after
       // When delta is greater, speed will be greater.
-      delta = aniProps[scrollDir] - $scroller.scrollTop();
-      if(delta < 0) {
-        delta *= -1;
-      }
+      delta = Math.abs(aniProps[scrollDir] - $scroller[scrollDir]());
 
       // Divide the delta by the coefficient
       speed = delta / opts.autoCoefficient;
@@ -255,18 +294,15 @@
   $.smoothScroll.version = version;
   $.smoothScroll.filterPath = function(string) {
     string = string || '';
+
     return string
-      .replace(/^\//,'')
-      .replace(/(?:index|default).[a-zA-Z]{3,4}$/,'')
-      .replace(/\/$/,'');
+      .replace(/^\//, '')
+      .replace(/(?:index|default).[a-zA-Z]{3,4}$/, '')
+      .replace(/\/$/, '');
   };
 
   // default options
   $.fn.smoothScroll.defaults = defaults;
-
-  function escapeSelector (str) {
-    return str.replace(/(:|\.|\/)/g,'\\$1');
-  }
 
 }));
 

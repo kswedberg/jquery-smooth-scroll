@@ -18,7 +18,6 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pluginName: 'smooth-scroll',
-    bower: './bower.json',
     pkg: grunt.file.readJSON('package.json'),
     meta: {
       banner: '/*!<%= "\\n" %>' +
@@ -27,12 +26,11 @@ module.exports = function(grunt) {
           '<%= pkg.homepage ? " * " + pkg.homepage + "\\n" : "" %>' +
           ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>' +
           '<%= "\\n" %>' +
-          ' * Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %>' +
-          ' (<%= _.pluck(pkg.licenses, "url").join(", ") %>)' +
+          ' * Licensed <%= pkg.license %>' +
           '<%= "\\n" %>' + ' */' +
           '<%= "\\n\\n" %>'
     },
-		concat: {
+    concat: {
       all: {
         src: ['src/jquery.<%= pluginName %>.js'],
         dest: 'jquery.<%= pluginName %>.js'
@@ -41,8 +39,8 @@ module.exports = function(grunt) {
         stripBanners: true,
         banner: '<%= meta.banner %>',
         process: function(src) {
-          var umdHead = grunt.file.read('lib/tmpl/umdhead.tpl'),
-              umdFoot = grunt.file.read('lib/tmpl/umdfoot.tpl');
+          var umdHead = grunt.file.read('lib/tmpl/umdhead.tpl');
+          var umdFoot = grunt.file.read('lib/tmpl/umdfoot.tpl');
 
           src = src
           .replace('(function($) {', umdHead)
@@ -58,7 +56,8 @@ module.exports = function(grunt) {
           'jquery.<%= pluginName %>.min.js': ['<%= concat.all.dest %>']
         },
         options: {
-          preserveComments: 'some'
+          banner: '<%= meta.banner %>',
+          // preserveComments: /\/\*[\s\S]*/
         }
       }
     },
@@ -77,6 +76,7 @@ module.exports = function(grunt) {
       all: ['Gruntfile.js', 'src/**/*.js'],
       options: {
         curly: true,
+        devel: true,
         eqeqeq: true,
         unused: true,
         immed: true,
@@ -94,78 +94,48 @@ module.exports = function(grunt) {
         }
       }
     },
+    jscs: {
+      src: 'src/**/*.js',
+      options: {
+        config: '.jscsrc',
+        fix: true,
+        verbose: true
+      }
+    },
     version: {
-      patch: {
+
+      files: {
         src: [
           'package.json',
-          '<%= pluginName %>.jquery.json',
-          'bower.json',
           'src/jquery.<%= pluginName %>.js',
           'jquery.<%= pluginName %>.js'
-        ],
-        options: {
-          release: 'patch'
-        }
+        ]
       },
-      same: {
-        src: ['package.json', 'src/jquery.<%= pluginName %>.js', 'jquery.<%= pluginName %>.js']
-      },
-      bannerPatch: {
+      banner: {
         src: ['jquery.<%= pluginName %>.js'],
         options: {
-          prefix: '- v',
-          release: 'patch'
+          prefix: '- v'
         }
-      }
+      },
+
     }
-  });
-
-  grunt.registerTask( 'configs', 'Update json configs based on package.json', function() {
-    var pkg = grunt.file.readJSON('package.json'),
-        pkgBasename = grunt.config('pluginName'),
-        bowerFile = grunt.config('bower'),
-        bower = grunt.file.readJSON(bowerFile),
-        jqConfigFile = pkgBasename + '.jquery.json',
-        jqConfig = grunt.file.readJSON(jqConfigFile);
-
-    ['main', 'version', 'dependencies', 'keywords'].forEach(function(el) {
-      bower[el] = pkg[el];
-      jqConfig[el] = pkg[el];
-    });
-
-    ['author', 'repository', 'homepage', 'docs', 'bugs', 'demo', 'licenses'].forEach(function(el) {
-      jqConfig[el] = pkg[el];
-    });
-
-    jqConfig.keywords.shift();
-
-    jqConfig.name = pkgBasename;
-    bower.name = 'jquery-' + pkgBasename;
-
-    grunt.file.write( bowerFile, JSON.stringify(bower, null, 2) + '\n');
-    grunt.log.writeln( 'File "' + bowerFile + '" updated."' );
-
-    while ( /jquery/i.test(jqConfig.keywords[0]) ) {
-      jqConfig.keywords.shift();
-    }
-
-    grunt.file.write( jqConfigFile, JSON.stringify(jqConfig, null, 2) + '\n');
-    grunt.log.writeln( 'File "' + jqConfigFile + '" updated."' );
   });
 
   grunt.registerTask('docs', 'Convert readme.md to html and concat with header and footer for index.html', function() {
-    var readme = grunt.file.read('readme.md'),
-        head = grunt.template.process( grunt.file.read('lib/tmpl/header.tpl') ),
-        foot = grunt.file.read('lib/tmpl/footer.tpl'),
-        doc = marked(readme);
+    var readme = grunt.file.read('readme.md');
+    var head = grunt.template.process(grunt.file.read('lib/tmpl/header.tpl'));
+    var foot = grunt.file.read('lib/tmpl/footer.tpl');
+    var doc = marked(readme);
 
     grunt.file.write('index.html', head + doc + foot);
   });
 
-  grunt.registerTask('build', ['jshint', 'concat', 'version:same', 'configs', 'uglify', 'docs']);
-  grunt.registerTask('patch', ['jshint', 'concat', 'version:bannerPatch', 'version:patch', 'configs', 'uglify']);
+  grunt.registerTask('lint', ['jshint', 'jscs']);
+  grunt.registerTask('build', ['lint', 'concat', 'version', 'uglify', 'docs']);
+  grunt.registerTask('patch', ['lint', 'concat', 'version::patch', 'uglify']);
   grunt.registerTask('default', ['build']);
 
+  grunt.loadNpmTasks('grunt-jscs');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
