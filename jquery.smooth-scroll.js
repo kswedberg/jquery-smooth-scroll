@@ -1,5 +1,5 @@
 /*!
- * jQuery Smooth Scroll - v1.6.2 - 2016-01-16
+ * jQuery Smooth Scroll - v1.7.1 - 2016-01-18
  * https://github.com/kswedberg/jquery-smooth-scroll
  * Copyright (c) 2016 Karl Swedberg
  * Licensed MIT
@@ -18,7 +18,7 @@
   }
 }(function($) {
 
-  var version = '1.6.2';
+  var version = '1.7.1';
   var optionOverrides = {};
   var defaults = {
     exclude: [],
@@ -305,4 +305,3 @@
   $.fn.smoothScroll.defaults = defaults;
 
 }));
-
