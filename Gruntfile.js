@@ -130,6 +130,26 @@ module.exports = function(grunt) {
     grunt.file.write('index.html', head + doc + foot);
   });
 
+  grunt.registerTask('updateBower', 'Update bower.json to match package.json', function() {
+    var pkg = require('./package.json');
+    var props = ['name', 'main', 'homepage', 'repository', 'dependencies', 'keywords', 'license'];
+    var json = {
+      description: 'Easy implementation of smooth scrolling for same-page links'
+    };
+
+    props.forEach(function(item) {
+      if (pkg[item]) {
+        json[item] = pkg[item];
+      }
+    });
+
+    json.authors = [pkg.author];
+    json.moduleType = ['amd', 'node'];
+    json.ignore = ['demo/', 'lib/', 'src/', 'test/', '**/.*', 'Gruntfile.js', 'package.json'];
+
+    grunt.file.write('bower.json', JSON.stringify(json, null, 2));
+  });
+
   grunt.registerTask('lint', ['jshint', 'jscs']);
   grunt.registerTask('build', ['lint', 'concat', 'version', 'uglify', 'docs']);
   grunt.registerTask('patch', ['lint', 'concat', 'version::patch', 'uglify']);
