@@ -148,6 +148,10 @@
         var pathMatch = thisOpts.scrollTarget || (linkPath === locationPath);
         var thisHash = escapeSelector(link.hash);
 
+        if (thisHash && !$(thisHash).length) {
+          include = false;
+        }
+
         if (!thisOpts.scrollTarget && (!hostMatch || !pathMatch || !thisHash)) {
           include = false;
         } else {
