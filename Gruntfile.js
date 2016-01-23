@@ -1,7 +1,7 @@
 /*global module:false*/
 
 module.exports = function(grunt) {
-
+  var pkg = grunt.file.readJSON('package.json');
   var marked = require('marked');
   var hl = require('node-syntaxhighlighter');
 
@@ -18,7 +18,7 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     pluginName: 'smooth-scroll',
-    pkg: grunt.file.readJSON('package.json'),
+    pkg: pkg,
     meta: {
       banner: '/*!<%= "\\n" %>' +
           ' * <%= pkg.title %> - v<%= pkg.version %> - ' +
@@ -103,21 +103,22 @@ module.exports = function(grunt) {
       }
     },
     version: {
-
-      files: {
-        src: [
-          'package.json',
-          'src/jquery.<%= pluginName %>.js',
-          'jquery.<%= pluginName %>.js'
-        ]
+      src: {
+        src: ['src/jquery.<%= pluginName %>.js']
       },
-      banner: {
-        src: ['jquery.<%= pluginName %>.js'],
+      banners: {
+        pkg: pkg,
+        src: [
+          'jquery.<%= pluginName %>.js',
+          'jquery.<%= pluginName %>.min.js'
+        ],
         options: {
           prefix: '- v'
         }
       },
-
+      package: {
+        src: ['package.json']
+      },
     }
   });
 
@@ -152,8 +153,11 @@ module.exports = function(grunt) {
 
   grunt.registerTask('lint', ['jshint', 'jscs']);
   grunt.registerTask('build', ['lint', 'concat', 'version', 'uglify', 'docs']);
-  grunt.registerTask('patch', ['lint', 'concat', 'version::patch', 'uglify']);
   grunt.registerTask('default', ['build']);
+
+  ['patch', 'minor', 'major'].forEach(function(release) {
+    grunt.registerTask(release, ['lint', 'version:src:' + release, 'concat', 'uglify', 'version:banners:' + release, 'version:package:' + release]);
+  });
 
   grunt.loadNpmTasks('grunt-jscs');
   grunt.loadNpmTasks('grunt-contrib-jshint');
