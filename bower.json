@@ -1,0 +1,40 @@
+{
+  "description": "Easy implementation of smooth scrolling for same-page links",
+  "name": "jquery-smooth-scroll",
+  "main": "jquery.smooth-scroll.js",
+  "homepage": "https://github.com/kswedberg/jquery-smooth-scroll",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kswedberg/jquery-smooth-scroll"
+  },
+  "dependencies": {
+    "jquery": ">=1.4.2"
+  },
+  "keywords": [
+    "jQuery",
+    "jquery-plugin",
+    "scroll",
+    "animation"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Karl Swedberg",
+      "email": "kswedberg@gmail.com",
+      "url": "http://www.learningjquery.com/"
+    }
+  ],
+  "moduleType": [
+    "amd",
+    "node"
+  ],
+  "ignore": [
+    "demo/",
+    "lib/",
+    "src/",
+    "test/",
+    "**/.*",
+    "Gruntfile.js",
+    "package.json"
+  ]
+}

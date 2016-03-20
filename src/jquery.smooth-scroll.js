@@ -1,5 +1,5 @@
 (function($) {
-  var version = '1.6.2';
+  var version = '1.7.2';
   var optionOverrides = {};
   var defaults = {
     exclude: [],
@@ -147,6 +147,10 @@
         var hostMatch = location.hostname === link.hostname || !link.hostname;
         var pathMatch = thisOpts.scrollTarget || (linkPath === locationPath);
         var thisHash = escapeSelector(link.hash);
+
+        if (thisHash && !$(thisHash).length) {
+          include = false;
+        }
 
         if (!thisOpts.scrollTarget && (!hostMatch || !pathMatch || !thisHash)) {
           include = false;

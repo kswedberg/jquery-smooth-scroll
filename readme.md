@@ -138,6 +138,62 @@ for `$.smoothScroll`:
   `$('html, body').firstScrollable().animate({scrollTop: someNumber},
   someSpeed)`
 
+## Examples
+
+### Smooth scrolling on page load
+
+If you want to scroll to an element when the page loads, use `$.smoothScroll()` in a script at the end of the body or use `$(document).ready()`. To prevent the browser from automatically scrolling to the element on its own, your link on page 1 will need to include a fragment identifier that does _not_ match an element id on page 2. To ensure that users without JavaScript get to the same element, you should modify the link's hash on page 1 with JavaScript. Your script on page 2 will then modify it back to the correct one when you call `$.smoothScroll()`. 
+
+For example, let's say you want to smooth scroll to `<div id="scrolltome"></div>` on page-2.html. For page-1.html, your script might do the following:
+
+```js
+$('a[href="page-2.html#scrolltome"]').attr('href', function() {
+  var hrefParts = this.href.split(/#/);
+  hrefParts[1] = 'smoothScroll' + hrefParts[1];
+  return hrefParts.join('#');
+});
+
+```
+
+Then for page-2.html, your script would do this: 
+
+```js
+// Call $.smoothScroll if location.hash starts with "#smoothScroll"
+var reSmooth = /^#smoothScroll/;
+var id;
+if (reSmooth.test(location.hash)) {
+  // Strip the "#smoothScroll" part off (and put "#" back on the beginning)
+  id = '#' + location.hash.replace(reSmooth, '');
+  $.smoothScroll({scrollTarget: id});
+}
+```
+
+## Focus element after scrolling to it.
+
+Imagine you have a link to a form somewhere on the same page. When the user clicks the link, you want the user to be able to begin interacting with that form. With the smoothScroll plugin, you can use the `afterScroll` callback function. Here is an example that focuses the first input within the form after scrolling to the form:
+
+```js
+$('a.example').smoothScroll({
+  afterScroll: function(options) {
+    $(options.scrollTarget).find('input')[0].focus();
+  }
+});
+
+```
+
+For accessibility reasons, it might make sense to focus any element you scroll to, even if it's not a natively focusable element. To do so, you could add a `tabIndex` attribute to the target element:
+
+```js
+$('a.example').smoothScroll({
+  afterScroll: function(options) {
+    var $tgt = $(options.scrollTarget);
+    $tgt.attr('tabIndex', '0');
+    // Using $tgt[0] allows us to call .focus() on the DOM node itself, not the jQuery collection
+    $tgt[0].focus();
+  }
+});
+```
+
 ## Notes
 
 * To determine where to scroll the page, the `$.fn.smoothScroll` method looks
