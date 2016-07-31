@@ -15,6 +15,7 @@
       text-align: center;
     }
   </style>
+  <!--  ↓ Script down below ↓ -->
 </head>
 <body>
   <h2>Smooth Scroll jQuery Plugin with Back Button Support</h2>
@@ -46,24 +47,31 @@
   <script src="../lib/jquery/jquery.js"></script>
   <script src="../src/jquery.smooth-scroll.js"></script>
   <script>
-    $('a[href*="#"]')
-    .bind('click', function(event) {
-      var hash = this.hash.replace(/[#<>]/g, '')
-
-      if (this.pathname === location.pathname) {
-        event.preventDefault();
-      }
-
-      if (hash) {
-        location.hash = '#/' + hash;
-      }
-    })
-
+    // Bind the hashchange event listener
     $(window).bind('hashchange', function(event) {
       $.smoothScroll({
-        scrollTarget: '#' + location.hash.replace(/^\#\/?/, '')
+        // Replace '#/' with '#' to go to the correct target
+        scrollTarget: location.hash.replace(/^\#\/?/, '#')
       });
     });
+
+    $('a[href*="#"]')
+    .bind('click', function(event) {
+      // Remove '#' from the hash.
+      var hash = this.hash.replace(/^#/, '')
+
+      if (this.pathname === location.pathname && hash) {
+        event.preventDefault();
+
+        // Change '#' (removed above) to '#/' so it doesn't jump without the smooth scrolling
+        location.hash = '#/' + hash;
+      }
+    });
+
+    // Trigger hashchange event on page load if there is a hash in the URL.
+    if (location.hash) {
+      $(window).trigger('hashchange');
+    }
   </script>
 
 </body>

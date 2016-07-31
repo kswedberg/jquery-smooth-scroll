@@ -27,7 +27,14 @@
     // fn(opts) function to be called after scrolling occurs.
     // `this` is the triggering element
     afterScroll: function() {},
+
+    // easing name. jQuery comes with "swing" and "linear." For others, you'll need an easing plugin
+    // from jQuery UI or elsewhere
     easing: 'swing',
+
+    // speed can be a number or 'auto'
+    // if 'auto', the speed will be calculated based on the formula:
+    // (current scroll position - target scroll position) / autoCoeffic
     speed: 400,
 
     // coefficient for "auto" speed

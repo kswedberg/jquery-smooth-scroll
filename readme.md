@@ -30,10 +30,9 @@ You can try a bare-bones demo at [kswedberg.github.io/jquery-smooth-scroll/demo/
 * Exclude links if they are within a containing element: `$('#container a').smoothScroll({excludeWithin: ['.container2']});`
 * Exclude links if they match certain conditions: `$('a').smoothScroll({exclude: ['.rough','#chunky']});`
 * Adjust where the scrolling stops: `$('.backtotop').smoothScroll({offset: -100});`
-* Add a callback function that is triggered before the scroll starts: `$('a').smoothScroll({beforeScroll: function() { alert('ready to go!'); }});
+* Add a callback function that is triggered before the scroll starts: `$('a').smoothScroll({beforeScroll: function() { alert('ready to go!'); }});`
 * Add a callback function that is triggered after the scroll is complete: `$('a').smoothScroll({afterScroll: function() { alert('we made it!'); }});`
-* Add back button support by including a history management plugin such as [Ben Alman's BBQ](http://benalman.com/code/projects/jquery-bbq/docs/files/jquery-ba-bbq-js.html). See [demo/bbq.html](demo/bbq.html) for an example of how to implement this.
-
+* Add back button support by using a [`hashchange` event listener](https://developer.mozilla.org/en-US/docs/Web/API/HashChangeEvent). You can also include a history management plugin such as [Ben Alman's BBQ](http://benalman.com/code/projects/jquery-bbq/docs/files/jquery-ba-bbq-js.html) for ancient browser support (IE &lt; 8), but you'll need jQuery 1.8 or earlier. See [demo/hashchange.html](demo/hashchange.html) or [demo/bbq.html](demo/bbq.html) for an example of how to implement.
 
 #### Options
 
@@ -49,7 +48,7 @@ The following options, shown with their default values, are available for both `
   // only use if you want to override default behavior
   scrollTarget: null,
 
-  // string to use as selector for event delegation (Requires jQuery >=1.4.2)
+  // string to use as selector for event delegation
   delegateSelector: null,
 
   // fn(opts) function to be called before scrolling occurs.
@@ -59,6 +58,9 @@ The following options, shown with their default values, are available for both `
   // fn(opts) function to be called after scrolling occurs.
   // `this` is the triggering element
   afterScroll: function() {},
+
+  // easing name. jQuery comes with "swing" and "linear." For others, you'll need an easing plugin
+  // from jQuery UI or elsewhere
   easing: 'swing',
 
   // speed can be a number or 'auto'
