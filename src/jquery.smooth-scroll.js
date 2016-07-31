@@ -191,12 +191,12 @@
 
       if (options.delegateSelector !== null) {
         this
-        .undelegate(options.delegateSelector, 'click.smoothscroll')
-        .delegate(options.delegateSelector, 'click.smoothscroll', clickHandler);
+        .off('click.smoothscroll', options.delegateSelector)
+        .on('click.smoothscroll', options.delegateSelector, clickHandler);
       } else {
         this
-        .unbind('click.smoothscroll')
-        .bind('click.smoothscroll', clickHandler);
+        .off('click.smoothscroll')
+        .on('click.smoothscroll', clickHandler);
       }
 
       return this;
