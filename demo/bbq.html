@@ -45,6 +45,10 @@
   </div>
   <script src="../lib/jquery/jquery.js"></script>
   <script src="../src/jquery.smooth-scroll.js"></script>
+  <script>
+  // Need this for "newer" versions of jQuery, which have removed $.browser
+  $.browser = $.browser || {msie: false};
+  </script>
   <script src="../lib/jquery.ba-bbq.js"></script>
   <script>
     $(document)
