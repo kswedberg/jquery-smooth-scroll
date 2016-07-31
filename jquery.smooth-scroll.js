@@ -1,5 +1,5 @@
 /*!
- * jQuery Smooth Scroll - v1.7.2 - 2016-01-23
+ * jQuery Smooth Scroll - v2.0.0 - 2016-07-31
  * https://github.com/kswedberg/jquery-smooth-scroll
  * Copyright (c) 2016 Karl Swedberg
  * Licensed MIT
@@ -18,7 +18,7 @@
   }
 }(function($) {
 
-  var version = '1.7.2';
+  var version = '2.0.0';
   var optionOverrides = {};
   var defaults = {
     exclude: [],
@@ -46,7 +46,14 @@
     // fn(opts) function to be called after scrolling occurs.
     // `this` is the triggering element
     afterScroll: function() {},
+
+    // easing name. jQuery comes with "swing" and "linear." For others, you'll need an easing plugin
+    // from jQuery UI or elsewhere
     easing: 'swing',
+
+    // speed can be a number or 'auto'
+    // if 'auto', the speed will be calculated based on the formula:
+    // (current scroll position - target scroll position) / autoCoeffic
     speed: 400,
 
     // coefficient for "auto" speed
@@ -203,12 +210,12 @@
 
       if (options.delegateSelector !== null) {
         this
-        .undelegate(options.delegateSelector, 'click.smoothscroll')
-        .delegate(options.delegateSelector, 'click.smoothscroll', clickHandler);
+        .off('click.smoothscroll', options.delegateSelector)
+        .on('click.smoothscroll', options.delegateSelector, clickHandler);
       } else {
         this
-        .unbind('click.smoothscroll')
-        .bind('click.smoothscroll', clickHandler);
+        .off('click.smoothscroll')
+        .on('click.smoothscroll', clickHandler);
       }
 
       return this;
