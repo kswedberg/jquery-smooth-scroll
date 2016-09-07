@@ -19,7 +19,7 @@
   "demo": "http://plugins.learningjquery.com/smooth-scroll/demo/",
   "license": "MIT",
   "dependencies": {
-    "jquery": ">=1.4.2"
+    "jquery": ">=1.7.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
