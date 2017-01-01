@@ -1,7 +1,7 @@
 /*!
- * jQuery Smooth Scroll - v2.0.1 - 2016-09-07
+ * jQuery Smooth Scroll - v2.1.1 - 2017-01-01
  * https://github.com/kswedberg/jquery-smooth-scroll
- * Copyright (c) 2016 Karl Swedberg
+ * Copyright (c) 2017 Karl Swedberg
  * Licensed MIT
  */
 
@@ -18,7 +18,7 @@
   }
 }(function($) {
 
-  var version = '2.0.1';
+  var version = '2.1.1';
   var optionOverrides = {};
   var defaults = {
     exclude: [],
@@ -124,6 +124,7 @@
     return scrollable;
   };
 
+  var rRelative = /^([\-\+]=)(\d+)/;
   $.fn.extend({
     scrollable: function(dir) {
       var scrl = getScrollable.call(this, {dir: dir});
@@ -222,20 +223,37 @@
     }
   });
 
+  var getExplicitOffset = function(val) {
+    var explicit = {relative: ''};
+    var parts = typeof val === 'string' && rRelative.exec(val);
+
+    if (typeof val === 'number') {
+      explicit.px = val;
+    } else if (parts) {
+      explicit.relative = parts[1];
+      explicit.px = parseFloat(parts[2]) || 0;
+    }
+
+    return explicit;
+  };
+
   $.smoothScroll = function(options, px) {
     if (options === 'options' && typeof px === 'object') {
       return $.extend(optionOverrides, px);
     }
-    var opts, $scroller, scrollTargetOffset, speed, delta;
+    var opts, $scroller, speed, delta;
+    var explicitOffset = getExplicitOffset(options);
+    var scrollTargetOffset = {};
     var scrollerOffset = 0;
     var offPos = 'offset';
     var scrollDir = 'scrollTop';
     var aniProps = {};
     var aniOpts = {};
 
-    if (typeof options === 'number') {
+    console.log(explicitOffset);
+
+    if (explicitOffset.px) {
       opts = $.extend({link: null}, $.fn.smoothScroll.defaults, optionOverrides);
-      scrollTargetOffset = options;
     } else {
       opts = $.extend({link: null}, $.fn.smoothScroll.defaults, options || {}, optionOverrides);
 
@@ -246,6 +264,10 @@
           opts.scrollElement.css('position', 'relative');
         }
       }
+
+      if (px) {
+        explicitOffset = getExplicitOffset(px);
+      }
     }
 
     scrollDir = opts.direction === 'left' ? 'scrollLeft' : scrollDir;
@@ -253,7 +275,7 @@
     if (opts.scrollElement) {
       $scroller = opts.scrollElement;
 
-      if (!(/^(?:HTML|BODY)$/).test($scroller[0].nodeName)) {
+      if (!explicitOffset.px && !(/^(?:HTML|BODY)$/).test($scroller[0].nodeName)) {
         scrollerOffset = $scroller[scrollDir]();
       }
     } else {
@@ -263,13 +285,13 @@
     // beforeScroll callback function must fire before calculating offset
     opts.beforeScroll.call($scroller, opts);
 
-    scrollTargetOffset = (typeof options === 'number') ? options :
-                          px ||
-                          ($(opts.scrollTarget)[offPos]() &&
-                          $(opts.scrollTarget)[offPos]()[opts.direction]) ||
-                          0;
+    scrollTargetOffset = explicitOffset.px ? explicitOffset : {
+      relative: '',
+      px: ($(opts.scrollTarget)[offPos]() && $(opts.scrollTarget)[offPos]()[opts.direction]) || 0
+    };
 
-    aniProps[scrollDir] = scrollTargetOffset + scrollerOffset + opts.offset;
+    aniProps[scrollDir] = scrollTargetOffset.relative + (scrollTargetOffset.px + scrollerOffset + opts.offset);
+
     speed = opts.speed;
 
     // automatically calculate the speed of the scroll based on distance / coefficient
