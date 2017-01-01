@@ -98,20 +98,21 @@ options object as the second.
   `document.body`)
 * Doesn't automatically fire, so you need to bind it to some other user
   interaction. For example:
-
-        $('button.scrollsomething').on('click', function() {
-          $.smoothScroll({
-            scrollElement: $('div.scrollme'),
-            scrollTarget: '#findme'
-          });
-          return false;
-        });
-
+  ```js
+  $('button.scrollsomething').on('click', function() {
+    $.smoothScroll({
+      scrollElement: $('div.scrollme'),
+      scrollTarget: '#findme'
+    });
+    return false;
+  });
+  ```
 * The `$.smoothScroll` method can take one or two arguments.
-    * If the first argument is a number, the document is scrolled to that
+    * If the first argument is a number or a "relative string," the document is scrolled to that
     position. If it's an options object, those options determine how the
     document (or other element) will be scrolled.
-    * If a number is provided as the second argument, it will override whatever may have been set for the `scrollTarget` option.
+    * If a number or "relative string" is provided as the second argument, it will override whatever may have been set for the `scrollTarget` option.
+    * The relative string syntax, introduced in version 2.1, looks like `"+=100px"` or `"-=50px"` (see below for an example).
 
 #### Additional Option
 The following option, in addition to those listed for `$.fn.smoothScroll` above, is available
@@ -119,7 +120,7 @@ for `$.smoothScroll`:
 
 ```javascript
 {
-  // jQuery set of elements you wish to scroll.
+  // The jQuery set of elements you wish to scroll.
   //  if null (default), $('html, body').firstScrollable() is used.
   scrollElement: null
 }
@@ -143,6 +144,16 @@ for `$.smoothScroll`:
   someSpeed)`
 
 ## Examples
+
+### Scroll down one "page" at a time (v2.1+)
+
+With smoothScroll version 2.1 and later, you can use the "relative string" syntax to scroll an element or the document a certain number of pixels relative to its current position. The following code will scroll the document down one page at a time when the user clicks the ".pagedown" button:
+
+  ```js
+  $('button.pagedown').on('click', function() {
+    $.smoothScroll('+=' + $(window).height());
+  });
+  ```
 
 ### Smooth scrolling on page load
 

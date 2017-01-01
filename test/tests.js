@@ -55,3 +55,49 @@ QUnit.test('Scrolls the #scrollable element, or not.', function(assert) {
     });
   });
 });
+
+QUnit.test('Scrolls the #scrollable element to absolute or relative scroll position', function(assert) {
+  var done = assert.async(3);
+
+  var finalScroll = function() {
+    $.smoothScroll({
+      scrollElement: $('#scrollable'),
+      speed: 100,
+      afterScroll: function() {
+        var scrollTop = $('#scrollable').scrollTop();
+        assert.equal(scrollTop, 10, '#scrollable element scrolls back to 10');
+
+        // Trigger the next scroll, which should actually work
+        done();
+      }
+    }, 10);
+  };
+
+  $.smoothScroll({
+    scrollElement: $('#scrollable'),
+    speed: 100,
+    afterScroll: function() {
+      var scrollTop = $('#scrollable').scrollTop();
+      assert.equal(scrollTop, 15, '#scrollable element scrolls to 15');
+
+      // Trigger the next scroll, which should actually work
+      $('#scrollit').trigger('click');
+      done();
+    }
+  }, 15);
+
+  $('#scrollit').bind('click', function(event) {
+    event.preventDefault();
+
+    $.smoothScroll({
+      scrollElement: $('#scrollable'),
+      speed: 100,
+      afterScroll: function() {
+        var scrollTop = $('#scrollable').scrollTop();
+        assert.equal(scrollTop, 25, '#scrollable element scrolls "+=10" to 25');
+        done();
+        finalScroll();
+      }
+    }, '+=10');
+  });
+});

@@ -133,7 +133,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('updateBower', 'Update bower.json to match package.json', function() {
     var pkg = require('./package.json');
-    var props = ['name', 'main', 'homepage', 'repository', 'dependencies', 'keywords', 'license'];
+    var props = ['name', 'main', 'homepage', 'version', 'repository', 'dependencies', 'keywords', 'license'];
     var json = {
       description: 'Easy implementation of smooth scrolling for same-page links'
     };
@@ -152,11 +152,11 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('lint', ['jshint', 'jscs']);
-  grunt.registerTask('build', ['lint', 'concat', 'version', 'uglify', 'docs']);
+  grunt.registerTask('build', ['lint', 'concat', 'version', 'updateBower', 'uglify', 'docs']);
   grunt.registerTask('default', ['build']);
 
   ['patch', 'minor', 'major'].forEach(function(release) {
-    grunt.registerTask(release, ['lint', 'version:src:' + release, 'concat', 'uglify', 'version:banners:' + release, 'version:package:' + release]);
+    grunt.registerTask(release, ['lint', 'version:src:' + release, 'concat', 'uglify', 'version:banners:' + release, 'version:package:' + release, 'updateBower']);
   });
 
   grunt.loadNpmTasks('grunt-jscs');
