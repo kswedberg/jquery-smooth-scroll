@@ -231,8 +231,6 @@
     var aniProps = {};
     var aniOpts = {};
 
-    console.log(explicitOffset);
-
     if (explicitOffset.px) {
       opts = $.extend({link: null}, $.fn.smoothScroll.defaults, optionOverrides);
     } else {
