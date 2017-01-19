@@ -1,7 +1,7 @@
 {
   "name": "jquery-smooth-scroll",
   "title": "jQuery Smooth Scroll",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "scripts": {},
   "main": "jquery.smooth-scroll.js",
   "author": {
