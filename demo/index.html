@@ -48,8 +48,11 @@
       });
 
       $('#scroll-relative-plus').on('click', function() {
-        var wHeight = $(window).height();
-        $.smoothScroll('+=100px');
+        $.smoothScroll({
+          afterScroll: function() {
+            console.log('hello!')
+          }
+        }, '+=100px');
       });
       $('#scroll-relative-minus').on('click', function() {
         $.smoothScroll('-=100px');
