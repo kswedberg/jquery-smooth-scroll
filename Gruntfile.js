@@ -1,5 +1,3 @@
-/*global module:false*/
-
 module.exports = function(grunt) {
   var pkg = grunt.file.readJSON('package.json');
   var marked = require('marked');
@@ -94,12 +92,10 @@ module.exports = function(grunt) {
         }
       }
     },
-    jscs: {
-      src: 'src/**/*.js',
+    eslint: {
+      target: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
       options: {
-        config: '.jscsrc',
-        fix: true,
-        verbose: true
+        configFile: '.eslintrc.js',
       }
     },
     version: {
@@ -151,7 +147,7 @@ module.exports = function(grunt) {
     grunt.file.write('bower.json', JSON.stringify(json, null, 2));
   });
 
-  grunt.registerTask('lint', ['jshint', 'jscs']);
+  grunt.registerTask('lint', ['eslint']);
   grunt.registerTask('build', ['lint', 'concat', 'version', 'updateBower', 'uglify', 'docs']);
   grunt.registerTask('default', ['build']);
 
@@ -159,7 +155,7 @@ module.exports = function(grunt) {
     grunt.registerTask(release, ['lint', 'version:src:' + release, 'concat', 'uglify', 'version:banners:' + release, 'version:package:' + release, 'updateBower']);
   });
 
-  grunt.loadNpmTasks('grunt-jscs');
+  grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
