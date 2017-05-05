@@ -47,8 +47,11 @@ The following options, shown with their default values, are available for both `
   // one of 'top' or 'left'
   direction: 'top',
 
-  // only use if you want to override default behavior
+  // only use if you want to override default behavior or if using $.smoothScroll
   scrollTarget: null,
+
+  // automatically focus the target element after scrolling to it (see readme for details)
+  autoFocus: false,
 
   // string to use as selector for event delegation
   delegateSelector: null,
@@ -67,7 +70,7 @@ The following options, shown with their default values, are available for both `
 
   // speed can be a number or 'auto'
   // if 'auto', the speed will be calculated based on the formula:
-  // (current scroll position - target scroll position) / autoCoeffic
+  // (current scroll position - target scroll position) / autoCoefficient
   speed: 400,
 
   // autoCoefficent: Only used when speed set to "auto".
@@ -185,7 +188,12 @@ if (reSmooth.test(location.hash)) {
 
 ## Focus element after scrolling to it.
 
-Imagine you have a link to a form somewhere on the same page. When the user clicks the link, you want the user to be able to begin interacting with that form. With the smoothScroll plugin, you can use the `afterScroll` callback function. Here is an example that focuses the first input within the form after scrolling to the form:
+Imagine you have a link to a form somewhere on the same page. When the user clicks the link, you want the user to be able to begin interacting with that form.
+
+* As of **smoothScroll version 2.2**, the plugin will automatically focus the element if you set the `autoFocus` option to `true`.
+* In the future, versions 3.x and later will have `autoFocus` set to true **by default**.
+* If you are using the low-level `$.smoothScroll` method, `autoFocus` will only work if you've also provided a value for the `scrollTarget` option.
+* Prior to version 2.2, you can use the `afterScroll` callback function. Here is an example that focuses the first input within the form after scrolling to the form:
 
 ```js
 $('a.example').smoothScroll({
@@ -196,15 +204,18 @@ $('a.example').smoothScroll({
 
 ```
 
-For accessibility reasons, it might make sense to focus any element you scroll to, even if it's not a natively focusable element. To do so, you could add a `tabIndex` attribute to the target element:
+For accessibility reasons, it might make sense to focus any element you scroll to, even if it's not a natively focusable element. To do so, you could add a `tabIndex` attribute to the target element (this, again, is for versions prior to 2.2):
 
 ```js
-$('a.example').smoothScroll({
+$('div.example').smoothScroll({
   afterScroll: function(options) {
     var $tgt = $(options.scrollTarget);
-    $tgt.attr('tabIndex', '0');
-    // Using $tgt[0] allows us to call .focus() on the DOM node itself, not the jQuery collection
     $tgt[0].focus();
+
+    if (!$tgt.is(document.activeElement)) {
+      $tgt.attr('tabIndex', '-1');
+      $tgt[0].focus();
+    }
   }
 });
 ```

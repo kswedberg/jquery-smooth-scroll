@@ -61,6 +61,20 @@ QUnit.test('Scrolls the #scrollable element, or not.', function(assert) {
   });
 });
 
+QUnit.test('Auto-focuses the scroll target element after scrolling', function(assert) {
+  var done = assert.async(1);
+
+  $.smoothScroll({
+    scrollTarget: '#scrollable',
+    speed: 100,
+    autoFocus: true,
+    afterScroll: function(opts) {
+      assert.equal($(opts.scrollTarget)[0], document.activeElement, 'autofocus scrollTarget');
+      done();
+    }
+  });
+});
+
 QUnit.test('Scrolls the #scrollable element to absolute or relative scroll position', function(assert) {
   var done = assert.async(3);
 
