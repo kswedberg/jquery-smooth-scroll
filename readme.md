@@ -50,7 +50,8 @@ The following options, shown with their default values, are available for both `
   // only use if you want to override default behavior or if using $.smoothScroll
   scrollTarget: null,
 
-  // automatically focus the target element after scrolling to it (see readme for details)
+  // automatically focus the target element after scrolling to it
+  // (see https://github.com/kswedberg/jquery-smooth-scroll#focus-element-after-scrolling-to-it for details)
   autoFocus: false,
 
   // string to use as selector for event delegation
@@ -186,11 +187,16 @@ if (reSmooth.test(location.hash)) {
 }
 ```
 
-## Focus element after scrolling to it.
+### Focus element after scrolling to it.
 
 Imagine you have a link to a form somewhere on the same page. When the user clicks the link, you want the user to be able to begin interacting with that form.
 
 * As of **smoothScroll version 2.2**, the plugin will automatically focus the element if you set the `autoFocus` option to `true`.
+    ```js
+    $('div.example').smoothScroll({
+      autoFocus: true
+    });
+    ```
 * In the future, versions 3.x and later will have `autoFocus` set to true **by default**.
 * If you are using the low-level `$.smoothScroll` method, `autoFocus` will only work if you've also provided a value for the `scrollTarget` option.
 * Prior to version 2.2, you can use the `afterScroll` callback function. Here is an example that focuses the first input within the form after scrolling to the form:
