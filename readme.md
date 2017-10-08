@@ -130,6 +130,9 @@ for `$.smoothScroll`:
 }
 ```
 
+#### Note:
+If you use `$.smoothScroll`, do NOT use the `body` element (`document.body` or `$('body')`) alone for the `scrollElement` option. Probably not a good idea to use `document.documentElement` (`$('html')`) by itself either.
+
 ### $.fn.scrollable
 
 * Selects the matched element(s) that are scrollable. Acts just like a
