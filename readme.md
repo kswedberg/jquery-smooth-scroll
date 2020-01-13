@@ -98,10 +98,10 @@ options object as the second.
 ### $.smoothScroll
 
 * Utility method works without a selector: `$.smoothScroll()`
-* Can be used to scroll any element (not just `document.documentElement` /
-  `document.body`)
+* Can be used to scroll any element (not just `document.documentElement` / `document.body`)
 * Doesn't automatically fire, so you need to bind it to some other user
   interaction. For example:
+
   ```js
   $('button.scrollsomething').on('click', function() {
     $.smoothScroll({
@@ -111,14 +111,16 @@ options object as the second.
     return false;
   });
   ```
+
 * The `$.smoothScroll` method can take one or two arguments.
-    * If the first argument is a number or a "relative string," the document is scrolled to that
+  * If the first argument is a number or a "relative string," the document is scrolled to that
     position. If it's an options object, those options determine how the
     document (or other element) will be scrolled.
-    * If a number or "relative string" is provided as the second argument, it will override whatever may have been set for the `scrollTarget` option.
-    * The relative string syntax, introduced in version 2.1, looks like `"+=100px"` or `"-=50px"` (see below for an example).
+  * If a number or "relative string" is provided as the second argument, it will override whatever may have been set for the `scrollTarget` option.
+  * The relative string syntax, introduced in version 2.1, looks like `"+=100px"` or `"-=50px"` (see below for an example).
 
 #### Additional Option
+
 The following option, in addition to those listed for `$.fn.smoothScroll` above, is available
 for `$.smoothScroll`:
 
@@ -131,6 +133,7 @@ for `$.smoothScroll`:
 ```
 
 #### Note:
+
 If you use `$.smoothScroll`, do NOT use the `body` element (`document.body` or `$('body')`) alone for the `scrollElement` option. Probably not a good idea to use `document.documentElement` (`$('html')`) by itself either.
 
 ### $.fn.scrollable
@@ -195,11 +198,13 @@ if (reSmooth.test(location.hash)) {
 Imagine you have a link to a form somewhere on the same page. When the user clicks the link, you want the user to be able to begin interacting with that form.
 
 * As of **smoothScroll version 2.2**, the plugin will automatically focus the element if you set the `autoFocus` option to `true`.
+
     ```js
     $('div.example').smoothScroll({
       autoFocus: true
     });
     ```
+
 * In the future, versions 3.x and later will have `autoFocus` set to true **by default**.
 * If you are using the low-level `$.smoothScroll` method, `autoFocus` will only work if you've also provided a value for the `scrollTarget` option.
 * Prior to version 2.2, you can use the `afterScroll` callback function. Here is an example that focuses the first input within the form after scrolling to the form:
