@@ -140,6 +140,7 @@ If you use `$.smoothScroll`, do NOT use the `body` element (`document.body` or `
 
 * Selects the matched element(s) that are scrollable. Acts just like a
   DOM traversal method such as `.find()` or `.next()`.
+* Uses `document.scrollingElement` on compatible browsers when the selector is 'html' or 'body' or 'html, body'.
 * The resulting jQuery set may consist of **zero, one, or multiple**
   elements.
 
@@ -152,6 +153,7 @@ If you use `$.smoothScroll`, do NOT use the `body` element (`document.body` or `
   to use for "document" scrolling:
   `$('html, body').firstScrollable().animate({scrollTop: someNumber},
   someSpeed)`
+* Uses `document.scrollingElement` on compatible browsers when the selector is 'html' or 'body' or 'html, body'.
 
 ## Examples
 
