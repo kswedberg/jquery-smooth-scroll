@@ -17,7 +17,7 @@ npm install jquery-smooth-scroll
 The old-fashioned way:
 
 Go to the following URL in your browser and copy/paste the code into your own file:
-https://raw.githubusercontent.com/kswedberg/jquery-smooth-scroll/master/jquery.smooth-scroll.js
+https://raw.githubusercontent.com/kswedberg/jquery-smooth-scroll/master/jquery.smooth-scroll.min.js
 
 ## Demo
 
