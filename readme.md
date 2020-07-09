@@ -6,18 +6,41 @@ Allows for easy implementation of smooth scrolling for same-page links.
 
 Note: Version 2.0+ of this plugin requires jQuery version 1.7 or greater.
 
-## Download
+## Setup
 
-Using npm:
+### ES Module
 
 ```bash
 npm install jquery-smooth-scroll
 ```
 
-The old-fashioned way:
+or
 
-Go to the following URL in your browser and copy/paste the code into your own file:
-https://raw.githubusercontent.com/kswedberg/jquery-smooth-scroll/master/jquery.smooth-scroll.min.js
+```bash
+yarn add jquery-smooth-scroll
+```
+
+Then, use `import jquery-smooth-scroll`;
+
+**Note**: This assumes `window.jQuery` is available at time of import.
+
+### CDN
+
+```html
+<!--
+  You can get a URL for jQuery from
+  https://code.jquery.com
+-->
+<script src="SOME_URL_FOR_JQUERY"></script>
+<script src="https://cdn.statically.io/gh/kswedberg/jquery-smooth-scroll/3948290d/jquery.smooth-scroll.min.js"></script>
+```
+
+### Copy/paste
+
+Grab the code and paste it into your own file:
+
+* [Standard version](https://raw.githubusercontent.com/kswedberg/jquery-smooth-scroll/master/jquery.smooth-scroll.js)
+* [Minified version](https://raw.githubusercontent.com/kswedberg/jquery-smooth-scroll/master/jquery.smooth-scroll.js)
 
 ## Demo
 
