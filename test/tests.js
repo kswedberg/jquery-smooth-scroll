@@ -14,9 +14,10 @@ QUnit.module('scrollable');
 
 QUnit.test('Returns first scrollable element (html,body)', function(assert) {
   var scrollable = $('html,body').firstScrollable();
+  var scrollingElement = document.scrollingElement || document.body;
 
   assert.equal(scrollable.length, 1, 'One scrollable element is returned');
-  assert.equal(scrollable[0], document.body, 'Scrollable element is <body>');
+  assert.equal(scrollable[0], scrollingElement, 'Scrollable element matches document.scrollingElement or <body>');
 });
 
 QUnit.test('Returns scrollable element (div#scrollable)', function(assert) {
