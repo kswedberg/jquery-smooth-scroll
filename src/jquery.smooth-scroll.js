@@ -25,11 +25,11 @@
 
     // fn(opts) function to be called before scrolling occurs.
     // `this` is the element(s) being scrolled
-    beforeScroll: function() {},
+    beforeScroll: function() {/* empty by default */},
 
     // fn(opts) function to be called after scrolling occurs.
     // `this` is the triggering element
-    afterScroll: function() {},
+    afterScroll: function() {/* empty by default */},
 
     // easing name. jQuery comes with "swing" and "linear." For others, you'll need an easing plugin
     // from jQuery UI or elsewhere
@@ -108,7 +108,7 @@
     return scrollable;
   };
 
-  var rRelative = /^([\-\+]=)(\d+)/;
+  var rRelative = /^([-+]=)(\d+)/;
 
   $.fn.extend({
     scrollable: function(dir) {
@@ -123,9 +123,9 @@
     },
 
     smoothScroll: function(options, extra) {
-      options = options || {};
+      var userOptions = options || {};
 
-      if (options === 'options') {
+      if (userOptions === 'options') {
         if (!extra) {
           return this.first().data('ssOpts');
         }
@@ -138,7 +138,7 @@
         });
       }
 
-      var opts = $.extend({}, $.fn.smoothScroll.defaults, options);
+      var opts = $.extend({}, $.fn.smoothScroll.defaults, userOptions);
 
       var clickHandler = function(event) {
         var escapeSelector = function(str) {
@@ -324,12 +324,10 @@
 
   $.smoothScroll.version = version;
   $.smoothScroll.filterPath = function(string) {
-    string = string || '';
-
-    return string
-      .replace(/^\//, '')
-      .replace(/(?:index|default).[a-zA-Z]{3,4}$/, '')
-      .replace(/\/$/, '');
+    return (string || '')
+    .replace(/^\//, '')
+    .replace(/(?:index|default).[a-zA-Z]{3,4}$/, '')
+    .replace(/\/$/, '');
   };
 
   // default options

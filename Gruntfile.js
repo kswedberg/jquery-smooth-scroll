@@ -5,10 +5,9 @@ module.exports = function(grunt) {
 
   marked.setOptions({
     highlight: function(code, lang) {
-      lang = lang || 'javascript';
-      lang = hl.getLanguage(lang);
+      var language = hl.getLanguage(lang || 'javascript');
 
-      return hl.highlight(code, lang);
+      return hl.highlight(code, language);
     },
     gfm: true
   });
@@ -40,11 +39,11 @@ module.exports = function(grunt) {
           var umdHead = grunt.file.read('lib/tmpl/umdhead.tpl');
           var umdFoot = grunt.file.read('lib/tmpl/umdfoot.tpl');
 
-          src = src
+          var ret = src
           .replace('(function($) {', umdHead)
           .replace('})(jQuery);', umdFoot);
 
-          return src;
+          return ret;
         }
       }
     },
@@ -54,7 +53,7 @@ module.exports = function(grunt) {
           'jquery.<%= pluginName %>.min.js': ['<%= concat.all.dest %>']
         },
         options: {
-          banner: '<%= meta.banner %>',
+          banner: '<%= meta.banner %>'
           // preserveComments: /\/\*[\s\S]*/
         }
       }
@@ -95,8 +94,8 @@ module.exports = function(grunt) {
     eslint: {
       target: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
       options: {
-        fix: true,
-        configFile: '.eslintrc.js',
+        fix: true
+        // configFile: '.eslintrc.js',
       }
     },
     version: {
@@ -115,7 +114,7 @@ module.exports = function(grunt) {
       },
       package: {
         src: ['package.json']
-      },
+      }
     }
   });
 
