@@ -35,6 +35,9 @@
     "node-syntaxhighlighter": "^0.8.1",
     "qunit": "^2.19.1"
   },
+  "resolutions": {
+    "minimatch": "^3.1.4"
+  },
   "keywords": [
     "jQuery",
     "jquery-plugin",
