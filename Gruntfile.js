@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
   var pkg = grunt.file.readJSON('package.json');
-  var marked = require('marked');
+  var {marked} = require('marked');
   var hl = require('node-syntaxhighlighter');
 
   marked.setOptions({

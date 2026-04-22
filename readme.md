@@ -279,5 +279,5 @@ means that nothing will happen).
 Thank you! Please consider the following when working on this repo before you submit a pull request:
 
 * For code changes, please work on the "source" file: `src/jquery.smooth-scroll.js`.
-* Style conventions are noted in the `jshint` grunt file options and the `.jscsrc` file. To be sure your additions comply, run `grunt lint` from the command line.
+* Style conventions are set in the `eslint` grunt file options. To be sure your additions comply, run `grunt lint` from the command line.
 * If possible, please use Tim Pope's [git commit message style](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html). Multiple commits in a pull request will be squashed into a single commit. I may adjust the message for clarity, style, or grammar. I manually commit all merged PRs using the `--author` flag to ensure that proper authorship (yours) is maintained.
