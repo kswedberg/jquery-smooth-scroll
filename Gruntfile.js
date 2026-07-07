@@ -60,35 +60,12 @@ module.exports = function(grunt) {
     },
     watch: {
       scripts: {
-        files: '<%= jshint.all %>',
-        tasks: ['jshint:all']
+        files: '<%= eslint.target %>',
+        tasks: ['eslint']
       },
       docs: {
         files: ['readme.md', 'lib/tmpl/**/*.html'],
         tasks: ['docs']
-      }
-
-    },
-    jshint: {
-      all: ['Gruntfile.js', 'src/**/*.js'],
-      options: {
-        curly: true,
-        devel: true,
-        eqeqeq: true,
-        unused: true,
-        immed: true,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        sub: true,
-        undef: true,
-        boss: true,
-        eqnull: true,
-        browser: true,
-        globals: {
-          jQuery: true,
-          require: false
-        }
       }
     },
     eslint: {
@@ -156,7 +133,6 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-eslint');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-watch');
