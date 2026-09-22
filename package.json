@@ -19,8 +19,8 @@
   "demo": "http://plugins.learningjquery.com/smooth-scroll/demo/",
   "license": "MIT",
   "devDependencies": {
-    "eslint-config-kswedberg": "^7.4.3",
-    "grunt": "^1.0.1",
+    "eslint-config-kswedberg": "^7.4.4",
+    "grunt": "^1.6.3",
     "grunt-contrib-concat": "^2.1.0",
     "grunt-contrib-uglify": "^5.2.2",
     "grunt-contrib-watch": "^1.0.0",
@@ -29,7 +29,7 @@
     "grunt-version": "^3.0.0",
     "jquery": "^4.0.0",
     "lodash": "^4.18.1",
-    "marked": "^18.0.5",
+    "marked": "^18.0.13",
     "node-syntaxhighlighter": "^0.8.1",
     "qunit": "^2.26.0"
   },
